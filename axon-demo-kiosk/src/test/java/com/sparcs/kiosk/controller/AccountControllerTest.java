@@ -11,9 +11,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
-import com.sparcs.kiosk.aggregate.executive.account.AccountController;
-import com.sparcs.kiosk.aggregate.executive.account.BalanceTracker;
-import com.sparcs.kiosk.aggregate.executive.account.CInsertNote;
+import com.sparcs.kiosk.executive.account.AccountController;
+import com.sparcs.kiosk.executive.account.BalanceTracker;
+import com.sparcs.kiosk.executive.account.CInsertNote;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {

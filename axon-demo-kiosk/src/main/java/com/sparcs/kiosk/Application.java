@@ -9,7 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.sparcs.kiosk.aggregate.executive.CStartKiosk;
+import com.sparcs.kiosk.executive.CStartKiosk;
 
 @SpringBootApplication
 public class Application {

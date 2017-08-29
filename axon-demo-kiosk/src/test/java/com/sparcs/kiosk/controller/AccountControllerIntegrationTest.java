@@ -33,8 +33,8 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.sparcs.kiosk.Application;
-import com.sparcs.kiosk.aggregate.executive.CResetKiosk;
-import com.sparcs.kiosk.aggregate.executive.account.CInsertNote;
+import com.sparcs.kiosk.executive.CResetKiosk;
+import com.sparcs.kiosk.executive.account.CInsertNote;
 
 // References
 // http://rafaelhz.github.io/testing-websockets/
