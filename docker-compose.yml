@@ -1,0 +1,5 @@
+kiosk:
+  build: axon-demo-kiosk/
+  ports:
+  - 8080:8080
+
