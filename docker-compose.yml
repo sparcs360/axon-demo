@@ -2,6 +2,15 @@ version: '2'
 
 services:
 
+  shop1:
+    build: axon-demo-counter/
+    image: sparcs/counter
+    container_name: counter1
+    ports:
+      - "30010:8080"    # Web API
+    environment:
+      SHOP_ID: "000001"
+
   kiosk1_1:
     build: axon-demo-kiosk/
     image: sparcs/kiosk

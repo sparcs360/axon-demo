@@ -53,6 +53,11 @@
 				<artifactId>axon-demo-kiosk-ui-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.sparcs</groupId>
+				<artifactId>axon-demo-counter-ui-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.axonframework</groupId>
