@@ -1,5 +1,22 @@
-kiosk:
-  build: axon-demo-kiosk/
-  ports:
-  - 8080:8080
+version: '2'
 
+services:
+
+  kiosk1_1:
+    build: axon-demo-kiosk/
+    image: sparcs/kiosk
+    container_name: kiosk1_1
+    ports:
+      - "30011:8080"    # Web API
+    environment:
+      SHOP_ID: "000001"
+      KIOSK_INDEX: "01"
+
+  kiosk1_2:
+    image: sparcs/kiosk
+    container_name: kiosk1_2
+    ports:
+      - "30012:8080"    # Web API
+    environment:
+      SHOP_ID: "000001"
+      KIOSK_INDEX: "02"

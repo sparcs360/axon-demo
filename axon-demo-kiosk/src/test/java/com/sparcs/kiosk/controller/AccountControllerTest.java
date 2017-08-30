@@ -18,6 +18,8 @@ import com.sparcs.kiosk.executive.account.CInsertNote;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
 
+	private static final String KIOSK_ID = "KIOSK_ID";
+	
 	@Mock
     private CommandGateway mockCommandGateway;
 	@Mock
@@ -28,7 +30,7 @@ public class AccountControllerTest {
 	@Before
 	public void setup() {
 		
-		unitUnderTest = new AccountController(mockCommandGateway, mockBalanceTracker);
+		unitUnderTest = new AccountController(KIOSK_ID, mockCommandGateway, mockBalanceTracker);
 	}
 	
 	@Test
@@ -42,7 +44,7 @@ public class AccountControllerTest {
 	@Test
 	public void when_depositCash_then_ShouldSendCommand() {
 		
-		CInsertNote command = CInsertNote.builder().kioskId("KIOSK_ID").amount(337).build();
+		CInsertNote command = CInsertNote.builder().kioskId(KIOSK_ID).amount(337).build();
 		Message<CInsertNote> message = MessageBuilder.withPayload(command).build();
 		
 		unitUnderTest.depositCash(message);

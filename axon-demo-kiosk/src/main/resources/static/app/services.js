@@ -39,7 +39,7 @@ angular.module('appKiosk')
         },
         depositCash: function (amount) {
         	console.log('depositCash(amount=' + amount + ') -> SEND /kiosk/commands/account/deposit/cash');
-        	$stomp.send('/kiosk/commands/account/deposit/cash', {'kioskId': '000001-01', 'amount': amount});
+        	$stomp.send('/kiosk/commands/account/deposit/cash', {'amount': amount});
         },
         subscribeToBalanceUpdates: function () {
             var deferred = $q.defer();
@@ -57,11 +57,11 @@ angular.module('appKiosk')
 	return {
 		addSelection: function(id) {
         	console.log('addSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/add');
-        	$stomp.send('/kiosk/commands/slip/selection/add', {'kioskId': '000001-01', "selectionId":id});
+        	$stomp.send('/kiosk/commands/slip/selection/add', {"selectionId":id});
 		},
 		removeSelection: function(id) {
         	console.log('removeSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/remove');
-        	$stomp.send('/kiosk/commands/slip/selection/remove', {'kioskId': '000001-01', "selectionId":id});
+        	$stomp.send('/kiosk/commands/slip/selection/remove', {"selectionId":id});
 		},
         subscribeToSlipUpdates: function () {
             var deferred = $q.defer();

@@ -4,6 +4,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,13 @@ public class SlipController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SlipController.class);
 	
+	private final String kioskId;
     private final CommandGateway commandGateway;
     
     @Autowired
-    SlipController(CommandGateway commandGateway) {
+    SlipController(@Value("${kiosk.id}") String kioskId, CommandGateway commandGateway) {
+
+    	this.kioskId = kioskId;
     	this.commandGateway = commandGateway;
     }
     
@@ -25,13 +29,15 @@ public class SlipController {
     public void addSelection(Message<CAddSelection> message) throws Exception {
 
     	LOG.debug("addSelection({})", message);
-    	commandGateway.send(message.getPayload());
+    	CAddSelection messageWithIdentifier = message.getPayload().toBuilder().kioskId(kioskId).build();
+		commandGateway.send(messageWithIdentifier);
     }
 
     @MessageMapping("/selection/remove")
     public void removeSelection(Message<CRemoveSelection> message) throws Exception {
 
     	LOG.debug("removeSelection({})", message);
-    	commandGateway.send(message.getPayload());
+    	CRemoveSelection messageWithIdentifier = message.getPayload().toBuilder().kioskId(kioskId).build();
+		commandGateway.send(messageWithIdentifier);
     }
 }

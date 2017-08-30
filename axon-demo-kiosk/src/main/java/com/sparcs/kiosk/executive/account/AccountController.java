@@ -4,6 +4,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -15,12 +16,14 @@ public class AccountController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
 
+	private final String kioskId;
     private final CommandGateway commandGateway;
     private final BalanceTracker balanceTracker;
 
     @Autowired
-    public AccountController(CommandGateway commandGateway, BalanceTracker balanceTracker) {
+    public AccountController(@Value("${kiosk.id}") String kioskId, CommandGateway commandGateway, BalanceTracker balanceTracker) {
 
+    	this.kioskId = kioskId;
         this.commandGateway = commandGateway;
         this.balanceTracker = balanceTracker;
     }
@@ -37,6 +40,7 @@ public class AccountController {
     public void depositCash(Message<CInsertNote> message) {
 
     	LOG.debug("depositCash({})", message);
-        commandGateway.send(message.getPayload());
+        CInsertNote commandWithIdentifier = message.getPayload().toBuilder().kioskId(kioskId).build();
+		commandGateway.send(commandWithIdentifier);
     }
 }

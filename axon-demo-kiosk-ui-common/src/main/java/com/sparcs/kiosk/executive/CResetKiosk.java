@@ -4,10 +4,10 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@Builder
+@Value
+@Builder(toBuilder=true)
 @AllArgsConstructor
 public class CResetKiosk {
 
