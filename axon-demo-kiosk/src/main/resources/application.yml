@@ -1,9 +1,17 @@
 kiosk:
-  id: 000001-01
+  shop:
+    id: "000001"
+  index: "01"
+  id: ${kiosk.shop.id}-${kiosk.index}
+  shop-amqp:
+    host-name: rabbitmq
+    exchange-name: SHOP-${kiosk.shop.id}
+    queue-name: KIOSK-${kiosk.id}
 
 spring:
   application:
     name: kiosk
+
   datasource:
     url: jdbc:h2:mem:db;MODE=Oracle;DB_CLOSE_ON_EXIT=FALSE
     username: sa

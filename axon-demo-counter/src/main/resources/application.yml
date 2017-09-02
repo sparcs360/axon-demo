@@ -1,5 +1,12 @@
-shop:
-  id: 000001
+server:
+  port: 8081
+
+counter:
+  shop:
+    id: "000001"
+  shop-amqp:
+    host-name: rabbitmq
+    exchange-name: SHOP-${counter.shop.id}
 
 spring:
   application:

@@ -16,7 +16,7 @@
 
 		<dependency>
 			<groupId>com.sparcs</groupId>
-			<artifactId>axon-demo-counter-ui-common</artifactId>
+			<artifactId>axon-demo-kiosk-ui-common</artifactId>
 		</dependency>
 
 		<!-- Axon -->
@@ -55,10 +55,9 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
 		<!-- START: Required for STOMP with an external message broker -->

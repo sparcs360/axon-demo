@@ -36,16 +36,14 @@ public class ExecutiveAggregate {
 		
 		LOG.trace("ctor(cmd={})", cmd);
 
-		EKioskStarted event = EKioskStarted.builder()
-				.kioskId(cmd.getKioskId())
-				.build();
-		AggregateLifecycle.apply(event);
+		AggregateLifecycle.apply(EKioskStarted.builder().kioskId(cmd.getKioskId()).build());
 	}
 	
 	@EventSourcingHandler
 	public void on(EKioskStarted event) {
 		
-		LOG.trace("on(event={})", event);		
+		LOG.trace("on(event={})", event);
+
 		this.kioskId = event.getKioskId();
 		this.account = Account.INSTANCE;
 		this.potentialSlip = PotentialSlip.builder().build();
@@ -55,8 +53,9 @@ public class ExecutiveAggregate {
 	public void handle(CResetKiosk cmd) {
 		
 		LOG.trace("handle(cmd={})", cmd);
-		AggregateLifecycle.apply(new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()))
-			.andThenApply(() -> new EKioskReset(cmd.getKioskId(), cmd.getReason()));
+		AggregateLifecycle
+			.apply(new EKioskReset(cmd.getKioskId(), cmd.getReason()))
+			.andThenApply(() -> new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()));
 	}
 
 	@EventSourcingHandler

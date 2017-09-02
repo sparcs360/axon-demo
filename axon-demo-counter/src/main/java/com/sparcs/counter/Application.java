@@ -1,6 +1,5 @@
 package com.sparcs.counter;
 
-import org.axonframework.commandhandling.CommandBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ public class Application {
 	}
 	
 	@Bean
-	CommandLineRunner initialise(CommandBus commandBus, @Value("${shop.id}") String shopId) {
+	CommandLineRunner initialise(@Value("${counter.shop.id}") String shopId) {
 		
 		return((args) -> {
 			LOG.info("Counter in Shop #{} Ready", shopId);

@@ -2,12 +2,14 @@ version: '2'
 
 services:
 
-  shop1:
+  counter1:
     build: axon-demo-counter/
     image: sparcs/counter
     container_name: counter1
+    depends_on:
+      - rabbitmq
     ports:
-      - "30010:8080"    # Web API
+      - "30010:8081"    # Web API
     environment:
       SHOP_ID: "000001"
 
@@ -15,6 +17,8 @@ services:
     build: axon-demo-kiosk/
     image: sparcs/kiosk
     container_name: kiosk1_1
+    depends_on:
+      - rabbitmq
     ports:
       - "30011:8080"    # Web API
     environment:
@@ -24,8 +28,38 @@ services:
   kiosk1_2:
     image: sparcs/kiosk
     container_name: kiosk1_2
+    depends_on:
+      - rabbitmq
     ports:
       - "30012:8080"    # Web API
     environment:
       SHOP_ID: "000001"
       KIOSK_INDEX: "02"
+
+  counter2:
+    image: sparcs/counter
+    container_name: counter2
+    depends_on:
+      - rabbitmq
+    ports:
+      - "30020:8081"    # Web API
+    environment:
+      SHOP_ID: "000002"
+
+  kiosk2_1:
+    image: sparcs/kiosk
+    container_name: kiosk2_1
+    depends_on:
+      - rabbitmq
+    ports:
+      - "30021:8080"    # Web API
+    environment:
+      SHOP_ID: "000002"
+      KIOSK_INDEX: "01"
+
+  rabbitmq:
+    image: sparcs/rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management Web UI & API
