@@ -1,16 +1,44 @@
-# About
+# Introduction
 
-Yet another example of an enterprise application architecture built upon the [Axon 3 Framework](http://www.axonframework.org/)... with a little help from:
+This Project is a vehicle for evaluating various tools & technologies that I can use for building Enterprise Applications (which is my job).  My primary goal is to explore the CQRS and Event-Sourcing Architectural Patterns - specifically the capability of the [Axon 3 Framework](http://www.axonframework.org/).
 
-- Back-end
-  - Spring Framework
+## About the Project
+
+The Project provides the IT components for a hypothetical Business which sells it's Products directly to Customers in it's Estate of Retail Shops.
+
+The Estate is made up of an arbitrary number of Shops (the `docker-compose.yml` defines 2), each Shop contains:
+- Several Web Browser based 'Kiosk' Applications that allow Customers to buy Products.
+- A Web Browser based 'Counter' Application, used exclusively by members of Staff, which allows the Kiosks to be monitored and maintained.
+
+All machines (docker containers) that make up the IT infrastructure are connected to the same network.
+- All Applications in the estate connect to a single RabbitMQ server.
+- Two seperate topologies of Exchanges and Queues allow:
+  - Commands to be routed to specific Applications
+  - Events to be routed to any listening Applications
+
+Briefly, the design is:
+- Each Kiosk and Counter Web UI communicates with it's Spring Web Application using [STOMP](https://en.wikipedia.org/wiki/Streaming_Text_Oriented_Messaging_Protocol) over Web Sockets.
+  - Requests are sent to the Web Application via SEND commands (e.g., 'deposit cash')
+  - Responses are received via SUBSCRIBE commands (e.g., 'balance updated')
+- The Kiosk's Web Application converts the STOMP requests to Commands and dispatches them on it's local Axon `CommandBus`
+- Axon routes the Command to a specific `@CommandHandler` method of a specific instance of an `@Aggregate` class.
+- The method validates & processes the Command - if all is well, it publishes Events to the Axon `EventBus`
+- `@EventSourcingHandler` methods change the state of the `@Aggregate` instance
+- Published Events are stored in the Kiosk's `EventStore` (an in-memory H2 database), they are also published to a RabbitMQ Exchange.
+- The Counter's Web Application has `@EventHandler` methods that are listening for specific events 
+- The Counter Web Application sends Commands to a particular Kiosk (in the same Shop) via messages to a direct Exchange with a specific routing-key
+
+TODO: More
+
+## Tools & Technologies Used
+
+- Docker & Docker Compose
+- Spring Framework
   - Spring Boot
   - Spring Data (JPA)
-  - Spring Messaging
-  - Docker
+  - Spring Messaging ([this example](https://spring.io/guides/gs/messaging-stomp-websocket/))
 - Databases
   - H2
-  - MySql
 - Messaging
   - RabbitMQ
 - Front-end
@@ -18,20 +46,31 @@ Yet another example of an enterprise application architecture built upon the [Ax
   - Angular.JS (v1)
   - ngStomp
 
-# Build the java components
+## References
 
-`mvn clean install`
+I found the information below invaluable while learning about these technologies: 
+- [The excellent Axon 3 'Reference Guide' and 'JavaDocs'](http://www.axonframework.org/download/)
+- [Ben Wilcock's microservice-sampler](https://github.com/benwilcock/microservice-sampler)
+- [Trifork's AxonBank demo](https://github.com/AxonFramework/AxonBank)
 
-# Build Docker Images
+# Building and Running the Project
 
-## Base Images (only once)
+## Build the Java Components
+
+Maven is the build & dependency management tools.
+
+Execute `mvn clean install` from the root of your local git repo to build the Java Components.
+
+## Build Docker Images
+
+### Base Images (only once)
 
 ```
 docker build --tag sparcs/java8:latest src/docker/java8
 docker build --tag sparcs/rabbitmq:latest src/docker/rabbitmq
 ```
 
-## Application Images (each time the code changes)
+### Application Images (each time the code changes)
 
 ```
 docker-compose build
@@ -49,28 +88,38 @@ I often just do:
 mvn clean install && docker-compose build && docker rmi $(docker images -qa -f 'dangling=true')
 ```
 
-# Start the Docker Containers
+## Start the Docker Containers
 
 `docker-compose up`
 
 ...or in detached mode (i.e., no logs to stdout)
 `docker-compose up -d`
 
-# Identifying a Kiosk
+# Kiosk Web UI
+
+## Identifying a Kiosk
 
 The `docker-compose.yml` file sets the following environment variables for each Kiosk:
 - `SHOP_ID` is a unique 6-digit number with leading zeroes (e.g., "000001" for shop #1)
 - `KIOSK_INDEX` is a unique 2-digit number with leading zeroes that identifies a kiosk in a shop (e.g., "01")
 
-The `axon-demo-kiosk` Web Application expects a `kiosk.id` property to uniquely identify "this" kiosk
-The value is set via the Java command line to `${SHOP_ID}-${KIOSK_INDEX}` in the ENTRYPOINT of the Dockerfile
-The internal web server port of 8080 is exposed to the docker host as port `30000 + ((${SHOP_ID} * 10) + ${KIOSK_INDEX})`
-e.g., SHOP_ID "000001" and KIOSK_INDEX "01" becomes port 30011
+The `axon-demo-kiosk` Web Application expects a `kiosk.shop.id` property to uniquely identify which shop "this" kiosk is in, and a `kiosk.index` property to unique identify it's index.
 
-# Start the Kiosk Web UI
+The properties are set via the Java command line expressed in the ENTRYPOINT of the Dockerfile.
 
-Container **Kiosk1_1** is Shop #1, Index #1 at [http://localhost:30011](http://localhost:30011)
-Container **Kiosk1_2** is Shop #1, Index #2 at [http://localhost:30012](http://localhost:30012)
+Docker container names follow the format kiosk`${SHOP_ID}`_`${KIOSK_INDEX}`
+
+Similarly, the internal web server port of 8080 is exposed to the docker host as port `30000 + ((${SHOP_ID} * 10) + ${KIOSK_INDEX})`, e.g., **SHOP_ID** "000001" and **KIOSK_INDEX** "01" becomes port 30011.
+
+The following Kiosks are defined in the docker-compose file:
+
+|Shop Id|Kiosk Index|Container Name|URL|
+|---|---|---|---|
+|000001|01|Kiosk1_1|[http://localhost:30011](http://localhost:30011)|
+|000001|02|Kiosk1_2|[http://localhost:30012](http://localhost:30011)|
+|000002|01|Kiosk2_1|[http://localhost:30021](http://localhost:30011)|
+
+## Using the Kiosk Web UI
 
 You'll be presented with a number of Events from the "Tiddly-Winks World Championship 2017" Competition.
 
