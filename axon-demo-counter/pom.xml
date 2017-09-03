@@ -20,7 +20,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sparcs</groupId>
-			<artifactId>axon-demo-kiosk-ui-common</artifactId>
+			<artifactId>axon-demo-kiosk-common</artifactId>
 		</dependency>
 
 		<!-- Axon -->

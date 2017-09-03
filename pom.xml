@@ -21,8 +21,8 @@
 
 	<modules>
 		<module>axon-demo-common</module>
+		<module>axon-demo-kiosk-common</module>
 		<module>axon-demo-kiosk</module>
-		<module>axon-demo-kiosk-ui-common</module>
 		<module>axon-demo-counter</module>
 		<module>axon-demo-counter-ui-common</module>
 	</modules>
@@ -56,7 +56,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.sparcs</groupId>
-				<artifactId>axon-demo-kiosk-ui-common</artifactId>
+				<artifactId>axon-demo-kiosk-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
