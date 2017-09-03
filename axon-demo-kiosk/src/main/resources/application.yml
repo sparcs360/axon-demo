@@ -3,13 +3,13 @@ kiosk:
     id: "000001"
   index: "01"
   id: ${kiosk.shop.id}-${kiosk.index}
-  eventbus-amqp:
+  amqp:
     host-name: rabbitmq
-    exchange-name: EVENTS
-  shop-amqp:
-    host-name: rabbitmq
-    exchange-name: SHOP-${kiosk.shop.id}
-    queue-name: KIOSK-${kiosk.id}
+    eventbus:
+      exchange-name: EVENTS
+    shop:
+      exchange-name: SHOP-${kiosk.shop.id}
+      queue-name: KIOSK-${kiosk.id}
 
 spring:
   application:

@@ -19,9 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
-public class ShopCommandsConfig {
+public class ShopCommandsAmqpConfig {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShopCommandsConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ShopCommandsAmqpConfig.class);
 
 	public static final String PROPERTY_PATH = "counter.shop-amqp";
 	
@@ -36,7 +36,7 @@ public class ShopCommandsConfig {
     @Bean
     public ConnectionFactory connectionFactory() {
 
-        LOG.info("connectionFactory() <- hostName={}", hostName);
+        LOG.debug("connectionFactory() <- hostName={}", hostName);
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(hostName);
 		return cachingConnectionFactory;
     }
@@ -44,7 +44,7 @@ public class ShopCommandsConfig {
     @Bean
     public AmqpAdmin shopCommandAdmin() {
 
-        LOG.info("shopCommandAdmin()");
+        LOG.debug("shopCommandAdmin()");
 
     	RabbitAdmin admin = new RabbitAdmin(connectionFactory());
         admin.setAutoStartup(true);
@@ -55,7 +55,7 @@ public class ShopCommandsConfig {
     @Bean
     DirectExchange shopCommandExchange() {
 
-        LOG.info("shopCommandExchange() <- exchangeName={}", exchangeName);
+        LOG.debug("shopCommandExchange() <- exchangeName={}", exchangeName);
         DirectExchange exchange = new DirectExchange(exchangeName, true, false);
 		return exchange;
     }

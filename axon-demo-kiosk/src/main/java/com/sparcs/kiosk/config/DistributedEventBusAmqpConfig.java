@@ -6,11 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,33 +18,16 @@ public class DistributedEventBusAmqpConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DistributedEventBusAmqpConfig.class);
 
-	public static final String PROPERTY_PATH = "kiosk.eventbus-amqp";
-	
 	@Autowired
-	@Value("${kiosk.id}")
-	private String kioskId;
+	private KioskProperties kioskProperties;
 	
-	@Autowired
-	@Value("${" + PROPERTY_PATH + ".host-name}")
-	private String hostName;
-	
-	@Autowired
-	@Value("${" + PROPERTY_PATH + ".exchange-name}")
-	private String exchangeName;
-	
-    @Bean
-    public ConnectionFactory distributedEventBusConnectionFactory() {
-
-        return new CachingConnectionFactory(hostName);
-    }
-    
     @Bean
     @Profile("!DisableAmqp")
-    public AmqpAdmin distributedEventBusAdmin() {
+    public AmqpAdmin distributedEventBusAdmin(ConnectionFactory amqpConnectionFactory) {
 
-        LOG.debug("distributedEventBusAdmin()");
+        LOG.debug("distributedEventBusAdmin(amqpConnectionFactory={})", amqpConnectionFactory);
         
-        RabbitAdmin admin = new RabbitAdmin(distributedEventBusConnectionFactory());
+        RabbitAdmin admin = new RabbitAdmin(amqpConnectionFactory);
         admin.setAutoStartup(true);
         admin.declareExchange(distributedEventBusExchange());
         return admin;
@@ -55,8 +36,9 @@ public class DistributedEventBusAmqpConfig {
     @Bean
     FanoutExchange distributedEventBusExchange() {
 
-        LOG.debug("distributedEventBusExchange() <- exchangeName={}", exchangeName);
-        FanoutExchange exchange = new FanoutExchange(exchangeName, true, false);
+        LOG.debug("distributedEventBusExchange() <- getAmqpEventbusExchangeName={}", kioskProperties.getAmqpEventbusExchangeName());
+
+        FanoutExchange exchange = new FanoutExchange(kioskProperties.getAmqpEventbusExchangeName(), true, false);
 		return exchange;
     }
     
@@ -64,12 +46,12 @@ public class DistributedEventBusAmqpConfig {
     @Profile("!DisableAmqp")
     SpringAMQPPublisher amqpEventPublisher(EventBus eventBus, ConnectionFactory distributedEventBusConnectionFactory) {
 
-		LOG.debug("amqpEventPublisher(eventBus={}, distributedEventBusConnectionFactory={}) <- exchangeName={}",
-				eventBus, distributedEventBusConnectionFactory, exchangeName);
+		LOG.debug("amqpEventPublisher(eventBus={}, distributedEventBusConnectionFactory={}) <- getAmqpEventbusExchangeName={}",
+				eventBus, distributedEventBusConnectionFactory, kioskProperties.getAmqpEventbusExchangeName());
 
 		SpringAMQPPublisher eventPublisher = new SpringAMQPPublisher(eventBus);
 		eventPublisher.setConnectionFactory(distributedEventBusConnectionFactory);
-		eventPublisher.setExchangeName(exchangeName);
+		eventPublisher.setExchangeName(kioskProperties.getAmqpEventbusExchangeName());
 		eventPublisher.start();
 		return eventPublisher;
     }

@@ -1,6 +1,7 @@
 package com.sparcs.kiosk.controller;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
+import com.sparcs.kiosk.config.KioskProperties;
 import com.sparcs.kiosk.executive.account.AccountController;
 import com.sparcs.kiosk.executive.account.BalanceTracker;
 import com.sparcs.kiosk.executive.account.CInsertNote;
@@ -21,6 +23,8 @@ public class AccountControllerTest {
 	private static final String KIOSK_ID = "KIOSK_ID";
 	
 	@Mock
+    private KioskProperties mockKioskProperties;
+	@Mock
     private CommandGateway mockCommandGateway;
 	@Mock
     private BalanceTracker mockBalanceTracker;
@@ -30,7 +34,9 @@ public class AccountControllerTest {
 	@Before
 	public void setup() {
 		
-		unitUnderTest = new AccountController(KIOSK_ID, mockCommandGateway, mockBalanceTracker);
+		when(mockKioskProperties.getKioskId()).thenReturn(KIOSK_ID);
+
+		unitUnderTest = new AccountController(mockKioskProperties, mockCommandGateway, mockBalanceTracker);
 	}
 	
 	@Test
