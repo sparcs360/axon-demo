@@ -21,9 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
-public class ShopCommandsConfig {
+public class ShopCommandsAmqpConfig {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShopCommandsConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ShopCommandsAmqpConfig.class);
 
 	public static final String PROPERTY_PATH = "kiosk.shop-amqp";
 	
