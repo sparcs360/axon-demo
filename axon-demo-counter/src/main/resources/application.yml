@@ -4,6 +4,10 @@ server:
 counter:
   shop:
     id: "000001"
+  eventbus-amqp:
+    host-name: rabbitmq
+    exchange-name: EVENTS
+    queue-name: COUNTER-${counter.shop.id}
   shop-amqp:
     host-name: rabbitmq
     exchange-name: SHOP-${counter.shop.id}
