@@ -23,8 +23,8 @@ public class ShopAdminCommandListener {
 		
 		this.commandGateway = commandGateway;
 	}
-	
-	@RabbitListener(queues="#{@kioskProperties.amqpShopQueueName}")
+
+	@RabbitListener(queues="#{@shopCommandQueue}")
 	void on(ShopAdminCommand command) {
 		
 		LOG.info("on(command={})", command);
