@@ -22,11 +22,11 @@
 		<!-- Axon -->
 		<dependency>
 			<groupId>org.axonframework</groupId>
-			<artifactId>axon-spring-boot-starter</artifactId>
+			<artifactId>axon-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.axonframework</groupId>
-			<artifactId>axon-core</artifactId>
+			<artifactId>axon-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.axonframework</groupId>
@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.axonframework</groupId>
-			<artifactId>axon-distributed-commandbus-springcloud</artifactId>
+			<artifactId>axon-amqp</artifactId>
 		</dependency>
 
 		<dependency>

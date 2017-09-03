@@ -16,8 +16,8 @@ public abstract class LoggingMessageMonitor implements MessageMonitor<Message<?>
 	@Override
 	public MonitorCallback onMessageIngested(Message<?> message) {
 
-		LOG.trace("onMessageIngested(message.id={}, message.payload={}, message.metadata={})",
-				message.getIdentifier(), message.getPayload(), message.getMetaData());
+		LOG.trace("onMessageIngested(payload={}, id={})",
+				message.getPayload(), message.getIdentifier());
 		return this;
 	}
 

@@ -4,13 +4,13 @@ server:
 counter:
   shop:
     id: "000001"
-  eventbus-amqp:
+  amqp:
     host-name: rabbitmq
-    exchange-name: EVENTS
-    queue-name: COUNTER-${counter.shop.id}
-  shop-amqp:
-    host-name: rabbitmq
-    exchange-name: SHOP-${counter.shop.id}
+    eventbus:
+      exchange-name: EVENTS
+      queue-name: COUNTER-${counter.shop.id}
+    shop:
+      exchange-name: SHOP-${counter.shop.id}
 
 spring:
   application:
