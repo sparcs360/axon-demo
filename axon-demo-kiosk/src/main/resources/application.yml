@@ -3,6 +3,9 @@ kiosk:
     id: "000001"
   index: "01"
   id: ${kiosk.shop.id}-${kiosk.index}
+  eventbus-amqp:
+    host-name: rabbitmq
+    exchange-name: EVENTS
   shop-amqp:
     host-name: rabbitmq
     exchange-name: SHOP-${kiosk.shop.id}
