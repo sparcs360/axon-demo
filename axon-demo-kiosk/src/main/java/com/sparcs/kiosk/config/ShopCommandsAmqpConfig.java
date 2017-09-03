@@ -52,7 +52,7 @@ public class ShopCommandsAmqpConfig {
     @Bean
     public AmqpAdmin shopCommandAdmin() {
 
-        LOG.info("shopCommandAdmin()");
+        LOG.debug("shopCommandAdmin()");
         
         RabbitAdmin admin = new RabbitAdmin(connectionFactory());
         admin.setAutoStartup(true);
@@ -65,7 +65,7 @@ public class ShopCommandsAmqpConfig {
     @Bean
     DirectExchange shopCommandExchange() {
 
-        LOG.info("shopCommandExchange() <- exchangeName={}", exchangeName);
+        LOG.debug("shopCommandExchange() <- exchangeName={}", exchangeName);
         DirectExchange exchange = new DirectExchange(exchangeName, true, false);
 		return exchange;
     }
@@ -73,7 +73,7 @@ public class ShopCommandsAmqpConfig {
     @Bean
     public Queue shopCommandQueue() {
 
-        LOG.info("shopCommandQueue() <- queueName={}", queueName);
+        LOG.debug("shopCommandQueue() <- queueName={}", queueName);
         
     	Queue queue = new Queue(queueName, false, false, true);
 		return queue;
@@ -82,7 +82,7 @@ public class ShopCommandsAmqpConfig {
     @Bean
     Binding shopCommandBinding() {
     	
-        LOG.info("shopCommandBinding() <- queueName={}, exchangeName={}", queueName, exchangeName);
+        LOG.debug("shopCommandBinding() <- queueName={}, exchangeName={}", queueName, exchangeName);
 
         Binding binding = new Binding(queueName, Binding.DestinationType.QUEUE, exchangeName, kioskId, null);
 		return binding;
