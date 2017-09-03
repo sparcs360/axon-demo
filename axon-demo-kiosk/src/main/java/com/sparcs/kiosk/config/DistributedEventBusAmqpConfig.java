@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class DistributedEventBusAmqpConfig {
@@ -40,6 +41,7 @@ public class DistributedEventBusAmqpConfig {
     }
     
     @Bean
+    @Profile("!DisableAmqp")
     public AmqpAdmin distributedEventBusAdmin() {
 
         LOG.debug("distributedEventBusAdmin()");
@@ -59,6 +61,7 @@ public class DistributedEventBusAmqpConfig {
     }
     
 	@Bean
+    @Profile("!DisableAmqp")
     SpringAMQPPublisher amqpEventPublisher(EventBus eventBus, ConnectionFactory distributedEventBusConnectionFactory) {
 
 		LOG.debug("amqpEventPublisher(eventBus={}, distributedEventBusConnectionFactory={}) <- exchangeName={}",

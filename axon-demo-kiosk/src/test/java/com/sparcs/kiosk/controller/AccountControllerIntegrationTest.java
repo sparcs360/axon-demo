@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -17,13 +16,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -31,6 +26,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSession.Receiptable;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -45,20 +41,10 @@ import com.sparcs.kiosk.executive.account.CInsertNote;
 // http://rafaelhz.github.io/testing-websockets/
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=AccountControllerIntegrationTest.Config.class, webEnvironment=WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes=Application.class, webEnvironment=WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("DisableAmqp") // 'Turn off' communication with the RabbitMQ server
 public class AccountControllerIntegrationTest {
 
-    @Configuration
-    @Import(Application.class)
-    static class Config {
-    	
-    	@Bean
-    	public AmqpAdmin shopCommandAdmin() {
-    		// 'Turn off' communication with the RabbitMQ server
-    		return mock(AmqpAdmin.class);
-    	}
-    }
-    
     private static final String KIOSK_ID = "000001-01";
 
 	static final String WEBSOCKET_URI = "http://localhost:8080/kiosk-websocket";
