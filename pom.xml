@@ -20,6 +20,7 @@
 	</parent>
 
 	<modules>
+		<module>axon-demo-common</module>
 		<module>axon-demo-kiosk</module>
 		<module>axon-demo-kiosk-ui-common</module>
 		<module>axon-demo-counter</module>
@@ -48,6 +49,11 @@
 	<dependencyManagement>
 		<dependencies>
 
+			<dependency>
+				<groupId>com.sparcs</groupId>
+				<artifactId>axon-demo-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.sparcs</groupId>
 				<artifactId>axon-demo-kiosk-ui-common</artifactId>

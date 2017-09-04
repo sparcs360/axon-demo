@@ -1,7 +1,5 @@
 package com.sparcs.kiosk.config;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -10,7 +8,8 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
-import com.sparcs.kiosk.instrumentation.LoggingHandshakeInterceptor;
+import com.sparcs.instrumentation.LoggingHandshakeInterceptor;
+import com.sparcs.spring.EnvironmentUtils;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -35,15 +34,11 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
     	
         config.setApplicationDestinationPrefixes("/kiosk/commands/");
-        if (isProfileActive("relay-ui-messages")) {
+        if (EnvironmentUtils.isProfileActive(environment, "relay-ui-messages")) {
             config.enableStompBrokerRelay("/topic")
                   .setRelayHost("localhost");
         } else {
             config.enableSimpleBroker("/topic");
         }
     }
-
-	private boolean isProfileActive(String profileName) {
-		return Arrays.stream(environment.getActiveProfiles()).anyMatch(activeProfileName -> activeProfileName.equals(profileName));
-	}
 }

@@ -16,6 +16,10 @@
 
 		<dependency>
 			<groupId>com.sparcs</groupId>
+			<artifactId>axon-demo-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sparcs</groupId>
 			<artifactId>axon-demo-kiosk-ui-common</artifactId>
 		</dependency>
 

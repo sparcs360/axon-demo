@@ -1,4 +1,4 @@
-package com.sparcs.kiosk.instrumentation;
+package com.sparcs.instrumentation;
 
 import org.axonframework.messaging.Message;
 import org.axonframework.monitoring.MessageMonitor;

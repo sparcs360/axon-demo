@@ -6,10 +6,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.sparcs.counter.config.CounterProperties;
 
 @SpringBootApplication
+@ComponentScan(basePackages="com.sparcs")
 public class Application {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);

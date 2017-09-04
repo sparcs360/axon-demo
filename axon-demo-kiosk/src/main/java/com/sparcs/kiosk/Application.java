@@ -8,11 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.sparcs.kiosk.config.KioskProperties;
 import com.sparcs.kiosk.executive.CStartKiosk;
 
 @SpringBootApplication
+@ComponentScan(basePackages="com.sparcs")
 public class Application {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
@@ -26,11 +28,10 @@ public class Application {
 	CommandLineRunner initialise(CommandBus commandBus, KioskProperties kioskProperties) {
 		
 		return((args) -> {
+
 	        CStartKiosk cmd = new CStartKiosk(kioskProperties.getKioskId());
-			LOG.trace("Dispatching {}...", cmd);
-			// http://localhost:8080/console
-			// jdbc:h2:mem:axon3db;MODE=Oracle;DB_CLOSE_ON_EXIT=FALSE
 			commandBus.dispatch(GenericCommandMessage.asCommandMessage(cmd));
+
 			LOG.info("Kiosk #{} Ready", kioskProperties.getKioskId());
 		});
 	}

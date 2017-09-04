@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.sparcs.kiosk.instrumentation.LoggingCommandMonitor;
-import com.sparcs.kiosk.instrumentation.LoggingEventMonitor;
+import com.sparcs.instrumentation.LoggingCommandMonitor;
+import com.sparcs.instrumentation.LoggingEventMonitor;
 
 @Configuration
 public class AxonConfig {
