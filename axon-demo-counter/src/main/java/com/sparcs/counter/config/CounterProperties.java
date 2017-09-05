@@ -8,22 +8,22 @@ public class CounterProperties {
 
 	private final String shopId;
 	private final String amqpHostName;
-	private final String amqpEventbusExchangeName;
-	private final String amqpEventbusQueueName;
-	private final String amqpShopExchangeName;
+	private final String amqpKioskEventsInExchangeName;
+	private final String amqpKioskEventsInQueueName;
+	private final String amqpKioskCommandsOutExchangeName;
 	
 	public CounterProperties(
 			@Value("${counter.shop.id}") String shopId,
 			@Value("${counter.amqp.host-name}") String amqpHostName,
-			@Value("${counter.amqp.eventbus.exchange-name}") String amqpEventbusExchangeName,
-			@Value("${counter.amqp.eventbus.queue-name}") String amqpEventbusQueueName,
-			@Value("${counter.amqp.shop.exchange-name}") String amqpShopExchangeName) {
+			@Value("${counter.amqp.kiosk-events-in.exchange-name}") String amqpKioskEventsInExchangeName,
+			@Value("${counter.amqp.kiosk-events-in.queue-name}") String amqpKioskEventsInQueueName,
+			@Value("${counter.amqp.kiosk-commands-out.exchange-name}") String amqpKioskCommandsOutExchangeName) {
 
 		this.shopId = shopId;
 		this.amqpHostName = amqpHostName;
-		this.amqpEventbusExchangeName = amqpEventbusExchangeName;
-		this.amqpEventbusQueueName = amqpEventbusQueueName;
-		this.amqpShopExchangeName = amqpShopExchangeName;
+		this.amqpKioskEventsInExchangeName = amqpKioskEventsInExchangeName;
+		this.amqpKioskEventsInQueueName = amqpKioskEventsInQueueName;
+		this.amqpKioskCommandsOutExchangeName = amqpKioskCommandsOutExchangeName;
 	}
 
 	public String getShopId() {
@@ -34,15 +34,15 @@ public class CounterProperties {
 		return amqpHostName;
 	}
 
-	public String getAmqpEventbusExchangeName() {
-		return amqpEventbusExchangeName;
+	public String getAmqpKioskEventsInExchangeName() {
+		return amqpKioskEventsInExchangeName;
 	}
 
-	public String getAmqpEventbusQueueName() {
-		return amqpEventbusQueueName;
+	public String getAmqpKioskEventsInQueueName() {
+		return amqpKioskEventsInQueueName;
 	}
 
-	public String getAmqpShopExchangeName() {
-		return amqpShopExchangeName;
+	public String getAmqpKioskCommandsOutExchangeName() {
+		return amqpKioskCommandsOutExchangeName;
 	}
 }

@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "counter.shop.id",
+    "type": "java.lang.String",
+    "description": "The unique six-digit id (with leading zeros) of the Shop that the Kiosk is installed in"
+  },
+  {
+    "name": "counter.amqp.host-name",
+    "type": "java.lang.String",
+    "description": "The hostname (or IP) of the RabbitMQ server the kiosk uses for sending/receiving distributed messages"
+  },
+  {
+    "name": "counter.amqp.kiosk-events-in.exchange-name",
+    "type": "java.lang.String",
+    "description": "The name of the Exchange (on 'counter.amqp.host-name') that receives the Events emitted by Kiosks in 'counter.shop.id'"
+  },
+  {
+    "name": "counter.amqp.kiosk-events-in.queue-name",
+    "type": "java.lang.String",
+    "description": "The name of the Queue (on 'counter.amqp.host-name') to receive Kiosk Events from.  This will be bound with 'counter.amqp.kiosk-events-in.exchange-name' with a routing key of 'counter.shop.id'"
+  },
+  {
+    "name": "counter.amqp.kiosk-commands-out.exchange-name",
+    "type": "java.lang.String",
+    "description": "The name of the Exchange (on 'counter.amqp.host-name') to send Kiosk Commands to.  The routing key is the Id of the Kiosk."
+  }
+]}

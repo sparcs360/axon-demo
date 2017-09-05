@@ -13,15 +13,15 @@ import com.sparcs.counter.config.CounterProperties;
 import com.sparcs.kiosk.executive.CResetKiosk;
 
 @RestController
-public class ShopAdminCommandController {
+public class KioskCommandsController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShopAdminCommandController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(KioskCommandsController.class);
 
 	private final CounterProperties counterProperties;
 	private final AmqpTemplate amqpTemplate;
 	
 	@Autowired
-	ShopAdminCommandController(CounterProperties counterProperties, AmqpTemplate amqpTemplate) {
+	KioskCommandsController(CounterProperties counterProperties, AmqpTemplate amqpTemplate) {
 		
 		this.counterProperties = counterProperties;
 		this.amqpTemplate = amqpTemplate;
@@ -33,6 +33,6 @@ public class ShopAdminCommandController {
 		LOG.info("resetKiosk(kioskId={}, reason={})", kioskId, reason);
 
 		CResetKiosk command = CResetKiosk.builder().kioskId(kioskId).reason(reason).build();
-		amqpTemplate.convertAndSend(counterProperties.getAmqpShopExchangeName(), kioskId, command);
+		amqpTemplate.convertAndSend(counterProperties.getAmqpKioskCommandsOutExchangeName(), kioskId, command);
 	}
 }

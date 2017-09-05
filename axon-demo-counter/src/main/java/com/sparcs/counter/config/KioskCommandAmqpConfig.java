@@ -11,30 +11,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ShopCommandsAmqpConfig {
+public class KioskCommandAmqpConfig {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShopCommandsAmqpConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(KioskCommandAmqpConfig.class);
 
 	@Autowired
 	private CounterProperties counterProperties;
 	
     @Bean
-    public AmqpAdmin shopCommandAdmin(ConnectionFactory amqpConnectionFactory) {
+    public AmqpAdmin kioskCommandAdmin(ConnectionFactory amqpConnectionFactory) {
 
-        LOG.debug("shopCommandAdmin()");
+        LOG.debug("kioskCommandAdmin()");
 
     	RabbitAdmin admin = new RabbitAdmin(amqpConnectionFactory);
         admin.setAutoStartup(true);
-        admin.declareExchange(shopCommandExchange());
+        admin.declareExchange(kioskCommandExchange());
         return admin;
     }
 
     @Bean
-    DirectExchange shopCommandExchange() {
+    DirectExchange kioskCommandExchange() {
 
-        LOG.debug("shopCommandExchange() <- exchangeName={}", counterProperties.getAmqpShopExchangeName());
+        LOG.debug("kioskCommandExchange() <- getAmqpKioskCommandsOutExchangeName={}", counterProperties.getAmqpKioskCommandsOutExchangeName());
         
-        DirectExchange exchange = new DirectExchange(counterProperties.getAmqpShopExchangeName(), true, false);
+        DirectExchange exchange = new DirectExchange(counterProperties.getAmqpKioskCommandsOutExchangeName(), true, false);
 		return exchange;
     }
 }

@@ -24,7 +24,7 @@ public class ShopAdminCommandListener {
 		this.commandGateway = commandGateway;
 	}
 
-	@RabbitListener(queues="#{@shopCommandQueue}")
+	@RabbitListener(queues="#{@distributedCommandQueue}")
 	void on(ShopAdminCommand command) {
 		
 		LOG.info("on(command={})", command);

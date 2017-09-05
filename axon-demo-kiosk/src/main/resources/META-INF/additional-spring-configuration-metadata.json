@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "kiosk.shop.id",
+    "type": "java.lang.String",
+    "description": "The unique six-digit id (with leading zeros) of the Shop that the Kiosk is installed in"
+  },
+  {
+    "name": "kiosk.index",
+    "type": "java.lang.String",
+    "description": "The unique two-digit index (with leading zeros) of the Kiosk"
+  },
+  {
+    "name": "kiosk.amqp.host-name",
+    "type": "java.lang.String",
+    "description": "A description for 'kiosk.amqp.host-name'"
+  },
+  {
+    "name": "kiosk.amqp.kiosk-events-out.exchange-name",
+    "type": "java.lang.String",
+    "description": "A description for 'kiosk.amqp.kiosk-events-out.exchange-name'"
+  },
+  {
+    "name": "kiosk.amqp.kiosk-commands-in.exchange-name",
+    "type": "java.lang.String",
+    "description": "A description for 'kiosk.amqp.kiosk-commands-in.exchange-name'"
+  },
+  {
+    "name": "kiosk.amqp.kiosk-commands-in.queue-name",
+    "type": "java.lang.String",
+    "description": "A description for 'kiosk.amqp.kiosk-commands-in.queue-name'"
+  }
+]}

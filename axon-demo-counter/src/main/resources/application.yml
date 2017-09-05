@@ -6,11 +6,11 @@ counter:
     id: "000001"
   amqp:
     host-name: rabbitmq
-    eventbus:
-      exchange-name: EVENTS
-      queue-name: COUNTER-${counter.shop.id}
-    shop:
-      exchange-name: SHOP-${counter.shop.id}
+    kiosk-events-in:
+      exchange-name: EVT-${counter.shop.id}
+      queue-name: EVT-COUNTER-${counter.shop.id}
+    kiosk-commands-out:
+      exchange-name: CMD-${counter.shop.id}
 
 spring:
   application:
