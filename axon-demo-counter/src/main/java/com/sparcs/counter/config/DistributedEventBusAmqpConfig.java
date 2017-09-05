@@ -1,6 +1,11 @@
 package com.sparcs.counter.config;
 
 import org.axonframework.amqp.eventhandling.spring.SpringAMQPMessageSource;
+import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.EventHandlerInvoker;
+import org.axonframework.eventhandling.EventProcessor;
+import org.axonframework.eventhandling.SubscribingEventProcessor;
 import org.axonframework.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.rabbitmq.client.Channel;
+import com.sparcs.kiosk.executive.account.EBalanceChanged;
 
 @Configuration
 public class DistributedEventBusAmqpConfig {
@@ -69,9 +75,9 @@ public class DistributedEventBusAmqpConfig {
 				counterProperties.getAmqpEventbusExchangeName(), "", null);
 		return binding;
 	}
-
+    
 	@Bean
-	public SpringAMQPMessageSource distributedEventBusMessageSource(Serializer serializer) {
+	public SpringAMQPMessageSource distributedEventBusMessageSource(/* EventBus eventBus, */Serializer serializer) {
 
 		SpringAMQPMessageSource messageSource = new SpringAMQPMessageSource(serializer) {
 
@@ -83,6 +89,20 @@ public class DistributedEventBusAmqpConfig {
 			}
 		};
 		messageSource.subscribe(events -> events.forEach(event -> LOG.trace(event.getPayload().toString())));
+		//messageSource.subscribe(events -> eventBus.publish(events));
 		return messageSource;
+	}
+
+    @Bean
+    public EventProcessor eventProcessor(EventBus eventBus) {
+        EventProcessor eventProcessor = new SubscribingEventProcessor("eventProcessor", (EventHandlerInvoker) this, eventBus);
+        eventProcessor.start();
+        return eventProcessor;
+    }
+    
+	@EventHandler
+	void on(EBalanceChanged event) {
+		
+		LOG.info("{}", event);
 	}
 }
