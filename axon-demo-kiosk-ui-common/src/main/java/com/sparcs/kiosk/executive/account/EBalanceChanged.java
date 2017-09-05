@@ -1,5 +1,7 @@
 package com.sparcs.kiosk.executive.account;
 
+import com.sparcs.kiosk.KioskEvent;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -10,7 +12,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public abstract class EBalanceChanged {
+public abstract class EBalanceChanged implements KioskEvent {
 
 	private final String kioskId;
 	private final int balance;
