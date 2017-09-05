@@ -41,6 +41,8 @@ TODO: More
   - H2
 - Messaging
   - RabbitMQ
+- Other
+  - Lombok
 - Front-end
   - Bootstrap
   - Angular.JS (v1)
@@ -54,6 +56,16 @@ I found the information below invaluable while learning about these technologies
 - [Trifork's AxonBank demo](https://github.com/AxonFramework/AxonBank)
 
 # Building and Running the Project
+
+## Pre-requisites
+
+- Java 8 JRE
+- Maven
+- Docker
+- Docker Compose
+- Lombok
+
+TODO: More...
 
 ## Build the Java Components
 
