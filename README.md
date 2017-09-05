@@ -1,16 +1,16 @@
 # Introduction
 
-This Project is a vehicle for evaluating various tools & technologies that I can use for building Enterprise Applications (which is my job).  My primary goal is to explore the CQRS and Event-Sourcing Architectural Patterns - specifically the capability of the [Axon 3 Framework](http://www.axonframework.org/).
+This Project is a vehicle for evaluating various tools & technologies that I can use to build Enterprise Applications (my job).  My primary goal is to explore the [Command Query Responsibility Segregation](https://martinfowler.com/bliki/CQRS.html) (CQRS) and [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) (ES) Architectural Patterns - more specifically, the capabilities of the [Axon 3 Framework](http://www.axonframework.org/).
 
 ## About the Project
 
-The Project provides the IT components for a hypothetical Business which sells it's Products directly to Customers in it's Estate of Retail Shops.
+The Project delivers the software components supporting a hypothetical Business that sells it's Products directly to Customers in it's Estate of Retail Shops.
 
-The Estate is made up of an arbitrary number of Shops (the `docker-compose.yml` defines 2), each Shop contains:
+The Estate is made up of an arbitrary number of Shops, each Shop contains:
 - Several Web Browser based 'Kiosk' Applications that allow Customers to buy Products.
 - A Web Browser based 'Counter' Application, used exclusively by members of Staff, which allows the Kiosks to be monitored and maintained.
 
-All machines (docker containers) that make up the IT infrastructure are connected to the same network.
+All machines that make up the IT infrastructure are connected to the same network.
 - All Applications in the estate connect to a single RabbitMQ server.
 - Two seperate topologies of Exchanges and Queues allow:
   - Commands to be routed to specific Applications
@@ -174,9 +174,24 @@ ORDER BY
 
 ## What part does RabbitMQ play?
 
-Counter and Kiosk applications running in the same shop (i.e., `counter.shop.id` and `kiosk.shop.id` have the same value), connect to the same Rabbit MQ Exchange.  The Exchange is 'direct' and is called `SHOP-xxx` (where xxx is the Shop Id).  If the Exchange doesn't exist, then it is created when any Kiosk or Counter application within the Shop is started.
+Counter and Kiosk applications connect to the Rabbit MQ Server defined by the `counter.amqp.host-name` and `kiosk.amqp.host-name` properties respectively.
 
-When a Kiosk application starts, it creates a non-durable, auto-delete Queue called `KIOSK-xxx` (where xxx is the Kiosk Id).  The queue is bound to the Shop Exchange.  The routing key that tells the Exchange which queue to deliver a specific message to is the Kiosk Id.
+When a Counter starts, it:
+- Subscribes to Events published by the Kiosks in the same shop, by:
+  - Creating a 'durable' Exchange (if it doesn't already exist), who's name is defined in the `counter.amqp.kiosk-events-in.exchange-name` property.
+  - Creating a 'non-durable', 'auto-delete' queue who's name is defined by the `counter.amqp.kiosk-events-in.queue-name` property
+  - Binding the Queue to the Exchange
+- Dispatches Commands intended for a specific Kiosk in the same shop, by:
+  - Creating a 'durable' Exchange (if it doesn't already exist), who's name is defined in the `counter.amqp.kiosk-commands-out.exchange-name` property
+  - The 'routing key' is set to the Id of the target Kiosk
+
+When a Kiosk starts, it:
+- Publishes Events to potential subscribers, by:
+  - Creating a 'durable' Exchange (if it doesn't already exist), who's name is defined in the `kiosk.amqp.kiosk-events-out.exchange-name` property.
+- Listens for Commands sent to it, by:
+  - Creating a 'durable' Exchange (if it doesn't already exist), who's name is defined in the `counter.amqp.kiosk-commands-in.exchange-name` property.
+  - Creating a 'non-durable', 'auto-delete' queue who's name is defined by the `counter.amqp.kiosk-commands-in.queue-name` property
+  - Binding the Queue to the Exchange with a 'routing key' of `${kiosk.shop.id}-${kiosk.index}`
 
 ## Walkthrough of the setup
 
