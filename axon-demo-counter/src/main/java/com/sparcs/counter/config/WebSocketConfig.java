@@ -1,4 +1,4 @@
-package com.sparcs.kiosk.config;
+package com.sparcs.counter.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,20 +15,20 @@ import com.sparcs.spring.EnvironmentUtils;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-	private final KioskProperties kioskProperties;
+	private final CounterProperties counterProperties;
     private final Environment environment;
 
     @Autowired
-    WebSocketConfig(KioskProperties kioskProperties, Environment environment) {
-
-    	this.kioskProperties = kioskProperties;
+    WebSocketConfig(CounterProperties counterProperties, Environment environment) {
+    	
+    	this.counterProperties = counterProperties;
     	this.environment = environment;
     }
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
     	
-        registry.addEndpoint("/kiosk-websocket")
+        registry.addEndpoint("/counter-websocket")
         		.addInterceptors(new LoggingHandshakeInterceptor())
         		.withSockJS();
     }
@@ -36,10 +36,10 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
     	
-        config.setApplicationDestinationPrefixes("/kiosk/commands/");
+        config.setApplicationDestinationPrefixes("/counter/commands/");
         if (EnvironmentUtils.isProfileActive(environment, "relay-ui-messages")) {
             config.enableStompBrokerRelay("/topic")
-                  .setRelayHost(kioskProperties.getAmqpHostName());
+                  .setRelayHost(counterProperties.getAmqpHostName());
         } else {
             config.enableSimpleBroker("/topic");
         }
