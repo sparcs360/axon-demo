@@ -9,8 +9,6 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sparcs.kiosk.executive.EKioskReset;
-import com.sparcs.kiosk.executive.EKioskStarted;
 import com.sparcs.kiosk.executive.account.Account;
 import com.sparcs.kiosk.executive.account.EBalanceReset;
 import com.sparcs.kiosk.executive.slipbuild.PotentialSlip;
