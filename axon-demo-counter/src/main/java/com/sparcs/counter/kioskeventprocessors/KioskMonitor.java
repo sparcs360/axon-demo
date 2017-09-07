@@ -25,13 +25,13 @@ public class KioskMonitor {
     
 	private static final Logger LOG = LoggerFactory.getLogger(KioskMonitor.class);
 
-    private final SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations uiMessagingTemplate;
     private final Map<String, KioskStatus> kioskStatusMap;
     
     @Autowired
-    public KioskMonitor(SimpMessageSendingOperations messagingTemplate) {
+    public KioskMonitor(SimpMessageSendingOperations uiMessagingTemplate) {
     	
-    	this.messagingTemplate = messagingTemplate;
+    	this.uiMessagingTemplate = uiMessagingTemplate;
     	kioskStatusMap = new ConcurrentHashMap<>();
     }
     
@@ -43,6 +43,12 @@ public class KioskMonitor {
 		kioskStatusMap.put(event.getKioskId(), kioskStatus);
 		
 		publishToUI(kioskStatus);
+    }
+
+    @EventHandler
+    void on(EKioskReset event) {
+
+        LOG.trace("{}", event);
     }
 
     @EventHandler
@@ -72,8 +78,8 @@ public class KioskMonitor {
 	}
 
 	private void publishToUI(KioskStatus kioskStatus) {
-		messagingTemplate.convertAndSend("/topic/kiosk/" + kioskStatus.getKioskId() + "/events", kioskStatus);
-		messagingTemplate.convertAndSend("/topic/kiosks/events", getAllKioskStatuses());
+
+		uiMessagingTemplate.convertAndSend("/topic/kiosks/events", getAllKioskStatuses());
 	}
 
     @Data

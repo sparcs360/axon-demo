@@ -5,13 +5,13 @@ import lombok.ToString;
 
 @ToString(callSuper=true)
 @Builder
-public class ENoteInserted extends EBalanceIncreased {
+public class ECreditAdded extends EBalanceIncreased {
 
-	protected ENoteInserted() {
+	protected ECreditAdded() {
 		super();
 	}
 	
-	public ENoteInserted(String kioskId, int balance, int amount) {
+	public ECreditAdded(String kioskId, int balance, int amount) {
 		super(kioskId, balance, amount);
 	}
 }

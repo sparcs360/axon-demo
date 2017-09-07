@@ -47,7 +47,11 @@ angular.module('appCounter')
                 deferred.notify(data);
             });
             return deferred.promise;
-        }    
+        },
+        sendCommand: function (name, payload) {
+        	console.log('sendCommand(name=' + name + ', payload=' + JSON.stringify(payload) +') -> SEND /counter/commands/kiosks/sendcmd/' + name);
+        	$stomp.send('/counter/commands/kiosks/sendcmd/' + name, payload);
+        }        
     };
 })
 ;

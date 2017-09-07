@@ -20,15 +20,40 @@ public class Account {
     }
     
 	@CommandHandler
-	public void handle(CInsertNote cmd) {
+	public void handle(CDepositCash cmd) {
 		
 		LOG.trace("handle(cmd={})", cmd);
 		if (cmd.getAmount() <= 0) {
 			throw new InvalidGBPAmountException();
 		}
-		AggregateLifecycle.apply(new ENoteInserted(cmd.getKioskId(), balance + cmd.getAmount(), cmd.getAmount()));
+		AggregateLifecycle.apply(new ECashDeposited(cmd.getKioskId(), balance + cmd.getAmount(), cmd.getAmount()));
 	}
 	
+	@CommandHandler
+	public void handle(CAddCredit cmd) {
+		
+		LOG.trace("handle(cmd={})", cmd);
+		if (cmd.getAmount() <= 0) {
+			throw new InvalidGBPAmountException();
+		}
+		AggregateLifecycle.apply(new ECreditAdded(cmd.getKioskId(), balance + cmd.getAmount(), cmd.getAmount()));
+	}
+	
+	@CommandHandler
+	public void handle(CRemoveCredit cmd) {
+		
+		LOG.trace("handle(cmd={})", cmd);
+		int amountToRemove = cmd.getAmount();
+		if (amountToRemove <= 0) {
+			throw new InvalidGBPAmountException();
+		}
+		if (balance < amountToRemove) {
+			LOG.info("Amount to remove is more than current balance - reducing balance to zero");
+			amountToRemove = balance;
+		}
+		AggregateLifecycle.apply(new ECreditRemoved(cmd.getKioskId(), balance - amountToRemove, amountToRemove));
+	}
+
 	@EventSourcingHandler
 	public void on(EBalanceChanged event) {
 		

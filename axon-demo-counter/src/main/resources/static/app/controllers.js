@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('appCounter')
-.controller('KiosksCtrl', function ($scope, SocketService, CounterService) {
+.controller('KiosksCtrl', function ($scope, $uibModal, SocketService, CounterService) {
 	
 	$scope.kiosks;
 	
@@ -19,19 +19,60 @@ angular.module('appCounter')
     	$scope.kiosks = data;
     };
 
-    $scope.addCreditToKiosk = function (kioskId, amount) {
-    	var data = {"kioskId": kioskId, "amount": amount};
-    	console.log('addCreditToKiosk(data=' + angular.toJson(data) + ')');
+    $scope.addCreditToKiosk = function (kioskId) {
+    	console.log('addCreditToKiosk(kioskId=' + kioskId + ')');
+        $uibModal.open({
+            controller: 'SendCommandFromModalCtrl',
+            templateUrl: '/app/modals/addCreditToKioskModal.html',
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            resolve: {
+            	commandName: () => 'executive.account.CAddCredit',
+            	kioskId: () => kioskId
+            }
+        });
     };
     
-    $scope.removeCreditFromKiosk = function (kioskId, amount) {
-    	var data = {"kioskId": kioskId, "amount": amount};
-    	console.log('removeCreditFromKiosk(data=' + angular.toJson(data) + ')');
+    $scope.removeCreditFromKiosk = function (kioskId) {
+    	console.log('removeCreditFromKiosk(kioskId=' + kioskId + ')');
+        $uibModal.open({
+            controller: 'SendCommandFromModalCtrl',
+            templateUrl: '/app/modals/removeCreditFromKioskModal.html',
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            resolve: {
+            	commandName: () => 'executive.account.CRemoveCredit',
+            	kioskId: () => kioskId
+            }
+        });
     };
     
     $scope.resetKiosk = function (kioskId, reason) {
-    	var data = {"kioskId": kioskId, "reason": reason};
-    	console.log('resetKiosk(data=' + angular.toJson(data) + ')');
+    	console.log('resetKiosk(kioskId=' + kioskId + ')');
+        $uibModal.open({
+            controller: 'SendCommandFromModalCtrl',
+            templateUrl: '/app/modals/resetKioskModal.html',
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            resolve: {
+            	commandName: () => 'executive.CResetKiosk',
+            	kioskId: () => kioskId
+            }
+        });
+    };
+})
+.controller('SendCommandFromModalCtrl', function ($scope, $uibModalInstance, CounterService, kioskId, commandName) {
+
+    $scope.commandPayload = {
+    	"kioskId": kioskId
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss();
+    };
+    $scope.submit = function () {
+    	CounterService.sendCommand(commandName, $scope.commandPayload);
+        $uibModalInstance.close();
     };
 })
 ;

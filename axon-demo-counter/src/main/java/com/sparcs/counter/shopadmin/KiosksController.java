@@ -2,19 +2,23 @@ package com.sparcs.counter.shopadmin;
 
 import java.util.List;
 
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparcs.counter.config.CounterProperties;
 import com.sparcs.counter.kioskeventprocessors.KioskMonitor;
 import com.sparcs.counter.kioskeventprocessors.KioskMonitor.KioskStatus;
+import com.sparcs.kiosk.KioskCommand;
+import com.sparcs.kiosk.ShopAdminCommand;
 
 @Controller
 @MessageMapping("/kiosks")
@@ -23,15 +27,18 @@ public class KiosksController {
 	private static final Logger LOG = LoggerFactory.getLogger(KiosksController.class);
 
 	private final CounterProperties counterProperties;
+	private final AmqpTemplate amqpTemplate;
 	private final KioskMonitor kioskMonitor;
-    private final CommandGateway commandGateway;
-
+    private final ObjectMapper objectMapper;
+    
     @Autowired
-    public KiosksController(CounterProperties counterProperties, KioskMonitor kioskMonitor, CommandGateway commandGateway) {
+    public KiosksController(CounterProperties counterProperties, AmqpTemplate amqpTemplate, KioskMonitor kioskMonitor) {
 
-    	this.counterProperties = counterProperties;
+		this.counterProperties = counterProperties;
+		this.amqpTemplate = amqpTemplate;
     	this.kioskMonitor = kioskMonitor;
-        this.commandGateway = commandGateway;
+        
+        this.objectMapper = new ObjectMapper();
     }
 
     @SubscribeMapping("/get-status")
@@ -41,4 +48,28 @@ public class KiosksController {
     	LOG.debug("getStatus({})", message);
     	return kioskMonitor.getAllKioskStatuses();
     }
+
+    @MessageMapping("/sendcmd/{name}")
+    public void sendCommand(@DestinationVariable String name, String payload) {
+
+    	LOG.debug("sendCommand(name={}, payload={})", name, payload);
+    	KioskCommand command = null;
+		try {
+	    	Class<? extends ShopAdminCommand> commandClass = findCommandByName(name);
+			command = objectMapper.readValue(payload, commandClass);
+		} catch (Exception e) {
+			LOG.error("Failed to deserialise payload for command", e);
+			return;
+		}
+		
+		amqpTemplate.convertAndSend(counterProperties.getAmqpKioskCommandsOutExchangeName(), command.getKioskId(), command);
+    }
+
+	private Class<? extends ShopAdminCommand> findCommandByName(String name) throws ClassNotFoundException {
+		
+		String fullClassName = String.format("%s.%s", ICounterToKioskCommand.class.getPackage().getName(), name);
+		@SuppressWarnings("unchecked")
+		Class<? extends ShopAdminCommand> commandClass = (Class<? extends ShopAdminCommand>) Class.forName(fullClassName);
+		return commandClass;
+	}
 }

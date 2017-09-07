@@ -15,7 +15,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import com.sparcs.kiosk.config.KioskProperties;
 import com.sparcs.kiosk.executive.account.AccountController;
 import com.sparcs.kiosk.executive.account.BalanceTracker;
-import com.sparcs.kiosk.executive.account.CInsertNote;
+import com.sparcs.kiosk.executive.account.CDepositCash;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
@@ -50,8 +50,8 @@ public class AccountControllerTest {
 	@Test
 	public void when_depositCash_then_ShouldSendCommand() {
 		
-		CInsertNote command = CInsertNote.builder().kioskId(KIOSK_ID).amount(337).build();
-		Message<CInsertNote> message = MessageBuilder.withPayload(command).build();
+		CDepositCash command = CDepositCash.builder().kioskId(KIOSK_ID).amount(337).build();
+		Message<CDepositCash> message = MessageBuilder.withPayload(command).build();
 		
 		unitUnderTest.depositCash(message);
 		

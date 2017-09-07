@@ -7,4 +7,5 @@ package com.sparcs.kiosk;
  */
 public interface KioskCommand {
 
+	String getKioskId();
 }

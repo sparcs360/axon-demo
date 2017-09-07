@@ -35,7 +35,7 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.sparcs.kiosk.Application;
 import com.sparcs.kiosk.executive.CResetKiosk;
-import com.sparcs.kiosk.executive.account.CInsertNote;
+import com.sparcs.kiosk.executive.account.CDepositCash;
 
 // References
 // http://rafaelhz.github.io/testing-websockets/
@@ -57,7 +57,7 @@ public class AccountControllerIntegrationTest {
     WebSocketStompClient stompClient;
     StompSession session;
     
-    CInsertNote anInsertNodeCommand;
+    CDepositCash aDepositCashCommand;
     
     @Autowired
     private CommandGateway commandGateway;
@@ -72,7 +72,7 @@ public class AccountControllerIntegrationTest {
                 Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()))));
         stompClient.setMessageConverter(messageConverter);
 
-		anInsertNodeCommand = CInsertNote.builder().kioskId(KIOSK_ID).amount(337).build();
+		aDepositCashCommand = CDepositCash.builder().kioskId(KIOSK_ID).amount(337).build();
     }
 
     @After
@@ -82,24 +82,24 @@ public class AccountControllerIntegrationTest {
     }
 
     @Test
-    public void when_InsertNote_then_BalanceShouldBeUpdated() throws Exception {
+    public void when_DepositCash_then_BalanceShouldBeUpdated() throws Exception {
 
         givenClientConnectedTo(WEBSOCKET_URI);
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
 
-		whenClientSendsCommand(anInsertNodeCommand);
+		whenClientSendsCommand(aDepositCashCommand);
 
 		thenShouldReceiveReply(337);
     }
 
     @Test
-    public void when_InsertSecondNote_then_BalanceShouldBeUpdated() throws Exception {
+    public void when_DepositMoreCash_then_BalanceShouldBeUpdated() throws Exception {
 
         givenClientConnectedTo(WEBSOCKET_URI);
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
-		givenClientSentCommandAndReceivedResponse(anInsertNodeCommand);
+		givenClientSentCommandAndReceivedResponse(aDepositCashCommand);
 
-		whenClientSendsCommand(anInsertNodeCommand);
+		whenClientSendsCommand(aDepositCashCommand);
 
 		thenShouldReceiveReply(674);
     }

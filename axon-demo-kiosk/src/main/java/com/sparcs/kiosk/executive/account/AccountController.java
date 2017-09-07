@@ -38,10 +38,10 @@ public class AccountController {
     }
 
     @MessageMapping("/deposit/cash")
-    public void depositCash(Message<CInsertNote> message) {
+    public void depositCash(Message<CDepositCash> message) {
 
     	LOG.debug("depositCash({})", message);
-        CInsertNote commandWithIdentifier = message.getPayload().toBuilder().kioskId(kioskProperties.getKioskId()).build();
+        CDepositCash commandWithIdentifier = message.getPayload().toBuilder().kioskId(kioskProperties.getKioskId()).build();
 		commandGateway.send(commandWithIdentifier);
     }
 }

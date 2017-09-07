@@ -9,7 +9,7 @@ import lombok.Value;
 
 @Value
 @Builder(toBuilder=true)
-public class CInsertNote implements EndUserCommand {
+public class CDepositCash implements EndUserCommand {
 
 	@TargetAggregateIdentifier
 	private final String kioskId;

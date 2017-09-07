@@ -40,16 +40,18 @@
                 <td>{{kiosk.kioskId}}</td>
                 <td>{{kiosk.balance / 100 | currency:"£"}}</td>
                 <td>
-                    <button ng-click="deposit(bankAccount.axonBankAccountId)" class="btn btn-sm btn-primary" type="submit">
+                    <button ng-click="addCreditToKiosk(kiosk.kioskId)" class="btn btn-sm btn-primary" type="submit">
+                        <!-- <span class="glyphicon glyphicon-gbp" aria-hidden="true"></span> -->
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        Deposit
+                        Add Credit
                     </button>
-                    <button ng-click="withdraw(bankAccount.axonBankAccountId)" class="btn btn-sm btn-success" type="submit">
+                    <button ng-click="removeCreditFromKiosk(kiosk.kioskId)" class="btn btn-sm btn-primary" type="submit">
+                        <!-- <span class="glyphicon glyphicon-gbp" aria-hidden="true"></span> -->
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                        Withdraw
+                        Remove Credit
                     </button>
-                    <button ng-click="transfer(bankAccount.axonBankAccountId)" class="btn btn-sm btn-info" type="submit">
-                        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+                    <button ng-click="resetKiosk(kiosk.kioskId)" class="btn btn-sm btn-danger" type="submit">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                         Reset
                     </button>
                 </td>
