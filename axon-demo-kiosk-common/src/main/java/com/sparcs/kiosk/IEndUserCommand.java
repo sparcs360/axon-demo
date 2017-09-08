@@ -5,6 +5,6 @@ package com.sparcs.kiosk;
  * 
  * @author Lee Newfeld
  */
-public interface EndUserCommand extends KioskCommand {
+public interface IEndUserCommand extends IKioskCommand {
 
 }

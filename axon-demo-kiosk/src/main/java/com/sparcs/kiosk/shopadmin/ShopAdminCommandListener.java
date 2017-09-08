@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.sparcs.kiosk.ShopAdminCommand;
+import com.sparcs.kiosk.ICounterToKioskCommand;
 
 @Profile("!DisableAmqp")
 @Component
@@ -25,7 +25,7 @@ public class ShopAdminCommandListener {
 	}
 
 	@RabbitListener(queues="#{@distributedCommandQueue}")
-	void on(ShopAdminCommand command) {
+	void on(ICounterToKioskCommand command) {
 		
 		LOG.info("on(command={})", command);
 		commandGateway.send(command);

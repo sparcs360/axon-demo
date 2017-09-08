@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparcs.counter.config.CounterProperties;
 import com.sparcs.counter.kioskeventprocessors.KioskMonitor;
 import com.sparcs.counter.kioskeventprocessors.KioskMonitor.KioskStatus;
-import com.sparcs.kiosk.KioskCommand;
-import com.sparcs.kiosk.ShopAdminCommand;
+import com.sparcs.kiosk.IKioskCommand;
+import com.sparcs.kiosk.ICounterToKioskCommand;
 
 @Controller
 @MessageMapping("/kiosks")
@@ -53,9 +53,9 @@ public class KiosksController {
     public void sendCommand(@DestinationVariable String name, String payload) {
 
     	LOG.debug("sendCommand(name={}, payload={})", name, payload);
-    	KioskCommand command = null;
+    	IKioskCommand command = null;
 		try {
-	    	Class<? extends ShopAdminCommand> commandClass = findCommandByName(name);
+	    	Class<? extends ICounterToKioskCommand> commandClass = findCommandByName(name);
 			command = objectMapper.readValue(payload, commandClass);
 		} catch (Exception e) {
 			LOG.error("Failed to deserialise payload for command", e);
@@ -65,11 +65,11 @@ public class KiosksController {
 		amqpTemplate.convertAndSend(counterProperties.getAmqpKioskCommandsOutExchangeName(), command.getKioskId(), command);
     }
 
-	private Class<? extends ShopAdminCommand> findCommandByName(String name) throws ClassNotFoundException {
+	private Class<? extends ICounterToKioskCommand> findCommandByName(String name) throws ClassNotFoundException {
 		
 		String fullClassName = String.format("%s.%s", ICounterToKioskCommand.class.getPackage().getName(), name);
 		@SuppressWarnings("unchecked")
-		Class<? extends ShopAdminCommand> commandClass = (Class<? extends ShopAdminCommand>) Class.forName(fullClassName);
+		Class<? extends ICounterToKioskCommand> commandClass = (Class<? extends ICounterToKioskCommand>) Class.forName(fullClassName);
 		return commandClass;
 	}
 }

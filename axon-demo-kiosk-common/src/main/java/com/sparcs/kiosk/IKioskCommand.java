@@ -5,7 +5,7 @@ package com.sparcs.kiosk;
  * 
  * @author Lee Newfeld
  */
-public interface KioskCommand {
+public interface IKioskCommand {
 
 	String getKioskId();
 }

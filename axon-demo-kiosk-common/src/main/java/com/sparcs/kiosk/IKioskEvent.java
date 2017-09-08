@@ -5,5 +5,5 @@ package com.sparcs.kiosk;
  * 
  * @author Lee Newfeld
  */
-public interface KioskEvent {
+public interface IKioskEvent {
 }

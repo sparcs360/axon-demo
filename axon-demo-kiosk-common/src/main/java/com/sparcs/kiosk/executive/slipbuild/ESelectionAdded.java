@@ -1,13 +1,13 @@
 package com.sparcs.kiosk.executive.slipbuild;
 
-import com.sparcs.kiosk.KioskEvent;
+import com.sparcs.kiosk.IKioskEvent;
 
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
-public class ESelectionAdded implements KioskEvent {
+public class ESelectionAdded implements IKioskEvent {
 
 	private final String kioskId;
 	private final String selectionId;
