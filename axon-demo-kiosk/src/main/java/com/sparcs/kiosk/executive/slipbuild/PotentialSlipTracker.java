@@ -43,6 +43,14 @@ public class PotentialSlipTracker {
     }
     
 	@EventHandler
+	void on(EPotentialSlipCleared event) {
+		
+		LOG.trace("on(event={})", event);
+
+		publish();
+	}
+	
+	@EventHandler
 	void on(ESelectionAdded event) {
 		
 		LOG.trace("on(event={})", event);

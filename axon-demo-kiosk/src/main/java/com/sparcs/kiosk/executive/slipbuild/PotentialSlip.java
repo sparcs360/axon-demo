@@ -30,6 +30,17 @@ public class PotentialSlip {
 	private List<PotentialSelection> selections = new ArrayList<>();
 	
 	@CommandHandler
+	public void handle(CClearPotentialSlip cmd) {
+		
+		LOG.trace("handle(cmd={})", cmd);
+
+		if (!selections.isEmpty()) {
+			
+			AggregateLifecycle.apply(EPotentialSlipCleared.builder().kioskId(cmd.getKioskId()).build());
+		}
+	}
+
+	@CommandHandler
 	public void handle(CAddSelection cmd) {
 		
 		LOG.trace("handle(cmd={})", cmd);
@@ -72,6 +83,13 @@ public class PotentialSlip {
 					.build();
 			AggregateLifecycle.apply(event);
 		}
+	}
+
+	@EventSourcingHandler
+	public void on(EPotentialSlipCleared event) {
+		
+		LOG.trace("on(event={})", event);
+		selections.clear();
 	}
 
 	@EventSourcingHandler

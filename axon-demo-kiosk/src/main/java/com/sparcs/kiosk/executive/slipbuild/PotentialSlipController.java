@@ -37,6 +37,14 @@ public class PotentialSlipController {
     	return potentialSlipTracker.getPotentialSlip();
     }
 
+    @MessageMapping("/clear")
+    public void clearSlip() throws Exception {
+
+    	LOG.debug("clearSlip()");
+    	CClearPotentialSlip messageWithIdentifier = CClearPotentialSlip.builder().kioskId(kioskProperties.getKioskId()).build();
+		commandGateway.send(messageWithIdentifier);
+    }
+
     @MessageMapping("/selection/add")
     public void addSelection(Message<CAddSelection> message) throws Exception {
 
