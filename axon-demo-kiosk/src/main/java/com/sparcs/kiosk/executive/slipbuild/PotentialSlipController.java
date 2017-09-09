@@ -12,15 +12,15 @@ import com.sparcs.kiosk.config.KioskProperties;
 
 @Controller
 @MessageMapping("/slip")
-public class SlipController {
+public class PotentialSlipController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SlipController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PotentialSlipController.class);
 	
 	private final KioskProperties kioskProperties;
     private final CommandGateway commandGateway;
     
     @Autowired
-    SlipController(KioskProperties kioskProperties, CommandGateway commandGateway) {
+    PotentialSlipController(KioskProperties kioskProperties, CommandGateway commandGateway) {
 
     	this.kioskProperties = kioskProperties;
     	this.commandGateway = commandGateway;

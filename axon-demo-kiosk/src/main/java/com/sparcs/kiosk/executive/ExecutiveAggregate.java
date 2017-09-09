@@ -61,4 +61,10 @@ public class ExecutiveAggregate {
 		
 		LOG.trace("on(event={})", event);		
 	}
+
+	// TODO: Bad smell here... but, what's the alternative?  Do I really have to build an identical copy
+	// by listening to the same Events on the "query side"?
+	public PotentialSlip getCopyOfPotentialSlip() {
+		return potentialSlip.toBuilder().build();
+	}
 }

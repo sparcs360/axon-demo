@@ -20,7 +20,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class PotentialSlip {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PotentialSlip.class);
