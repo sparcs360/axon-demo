@@ -21,7 +21,7 @@ public class PotentialSlipTracker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PotentialSlipTracker.class);
 
-	private static final String TOPIC_NAME = "/topic/slip";
+	public static final String TOPIC_NAME = "/topic/slip";
 
 	private final KioskProperties kioskProperties;
 	private final Repository<ExecutiveAggregate> executiveAggregateRepository;
@@ -62,6 +62,7 @@ public class PotentialSlipTracker {
 
 		Aggregate<ExecutiveAggregate> aggregate = executiveAggregateRepository.load(kioskProperties.getKioskId());
 		potentialSlip = aggregate.invoke(ExecutiveAggregate::getCopyOfPotentialSlip);
+		LOG.debug("Publishing slip={}", potentialSlip);
 		messagingTemplate.convertAndSend(TOPIC_NAME, potentialSlip);
 	}
 }

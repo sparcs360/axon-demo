@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import com.sparcs.kiosk.config.KioskProperties;
@@ -18,14 +19,24 @@ public class PotentialSlipController {
 	
 	private final KioskProperties kioskProperties;
     private final CommandGateway commandGateway;
+    private final PotentialSlipTracker potentialSlipTracker;
     
     @Autowired
-    PotentialSlipController(KioskProperties kioskProperties, CommandGateway commandGateway) {
+    PotentialSlipController(KioskProperties kioskProperties, CommandGateway commandGateway, PotentialSlipTracker potentialSlipTracker) {
 
     	this.kioskProperties = kioskProperties;
     	this.commandGateway = commandGateway;
+    	this.potentialSlipTracker = potentialSlipTracker;
     }
     
+    @MessageMapping("/get")
+    @SendTo(PotentialSlipTracker.TOPIC_NAME)
+    public PotentialSlip getPotentialSlip(Message<Object> message) {
+
+    	LOG.debug("getPotentialSlip({})", message);
+    	return potentialSlipTracker.getPotentialSlip();
+    }
+
     @MessageMapping("/selection/add")
     public void addSelection(Message<CAddSelection> message) throws Exception {
 

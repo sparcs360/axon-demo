@@ -111,5 +111,6 @@ angular.module('appKiosk')
     	clearSlip();
     	BuildSlipService.subscribeToSlipUpdates()
     		.then(function () {}, function () {}, updateSlip);
+    	BuildSlipService.requestSlipUpdate();
     });
 });

@@ -15,6 +15,8 @@ public class BalanceTracker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BalanceTracker.class);
 
+	public static final String TOPIC_NAME = "/topic/account/balance";
+
     private SimpMessageSendingOperations messagingTemplate;
     
     @Autowired
@@ -41,7 +43,7 @@ public class BalanceTracker {
 	private synchronized void publish(int balance) {
 
 		LOG.debug("Publishing balance={}", balance);
-		messagingTemplate.convertAndSend("/topic/account/balance", balance);
+		messagingTemplate.convertAndSend(TOPIC_NAME, balance);
 	}
 
 }
