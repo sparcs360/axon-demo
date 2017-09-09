@@ -30,7 +30,7 @@ public class AccountController {
     }
 
     @MessageMapping("/balance/get")
-    @SendTo("/topic/account/balance")
+    @SendTo(BalanceTracker.TOPIC_NAME)
     public int getBalance(Message<Object> message) {
 
     	LOG.debug("getBalance({})", message);

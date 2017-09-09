@@ -4,7 +4,6 @@ angular.module('appKiosk')
 .controller('KioskCtrl', function ($scope, SocketService, KioskService) {
 	
     function updateBalance(data) {
-    	console.log('updateBalance(data=' + angular.toJson(data) + ')');
         $scope.balance = data / 100;
     };
 
@@ -30,22 +29,22 @@ angular.module('appKiosk')
 	    		name: "Barnsley vs Sheffield",
 	    		selections: [
 	    			{
-	            		id: "S1.1",
+	            		selectionId: "S1.1",
 	            		name: "Barnsley",
-	            		den: 7,
-	            		num: 6
+	            		numerator: 7,
+	            		denominator: 6
 	    			},
 	    			{
-	            		id: "S1.2",
+	            		selectionId: "S1.2",
 	            		name: "Draw",
-	            		den: 2,
-	            		num: 1
+	            		numerator: 2,
+	            		denominator: 1
 	    			},
 	    			{
-	            		id: "S1.3",
+	            		selectionId: "S1.3",
 	            		name: "Sheffield",
-	            		den: 3,
-	            		num: 1
+	            		numerator: 3,
+	            		denominator: 1
 	    			}
 	    		]
 	    	},
@@ -53,22 +52,22 @@ angular.module('appKiosk')
 	    		name: "Leeds vs Manchester",
 	    		selections: [
 	    			{
-	            		id: "S2.1",
+	            		selectionId: "S2.1",
 	            		name: "Leeds",
-	            		den: 3,
-	            		num: 2
+	            		numerator: 3,
+	            		denominator: 2
 	    			},
 	    			{
-	            		id: "S2.2",
+	            		selectionId: "S2.2",
 	            		name: "Draw",
-	            		den: 11,
-	            		num: 10
+	            		numerator: 11,
+	            		denominator: 10
 	    			},
 	    			{
-	            		id: "S2.3",
+	            		selectionId: "S2.3",
 	            		name: "Manchester",
-	            		den: 2,
-	            		num: 1
+	            		numerator: 2,
+	            		denominator: 1
 	    			}
 	    		]
 	    	}
@@ -78,33 +77,32 @@ angular.module('appKiosk')
 	function clearSlip() {
 		
 		$scope.slip = {
-			
 			selections: []
 		};
 	}
 	
     function updateSlip(data) {
-    	console.log('updateSlip(data=' + angular.toJson(data) + ')');
+    	$scope.slip.selections = data.selections;
     };
 
+    $scope.containsSelection = function(selectionId) {
+		return $.grep($scope.slip.selections, (s) => s.selectionId == selectionId).length > 0;
+	}
+
     $scope.prettyPrintSelection = function (selection) {
-    	return selection.name + ' @ ' + selection.den + '/' + selection.num;
+    	return selection.name + ' @ ' + selection.numerator + '/' + selection.denominator;
     };
     
-    $scope.getSelectionButtonClass = function(selectionId) {
-    	
-    	return $scope.slip.selections.includes(selectionId) ? 'btn-primary' : 'btn-default';
+	$scope.getSelectionButtonClass = function(selectionId) {
+    	return ($scope.containsSelection(selectionId)) ? 'btn-primary' : 'btn-default';
     };
     
-    $scope.toggleSelection = function (id) {
+    $scope.toggleSelection = function (selectionId) {
     	
-    	if ($scope.slip.selections.includes(id)) {
-        	BuildSlipService.removeSelection(id);
-    		var i = $scope.slip.selections.indexOf(id);
-    		$scope.slip.selections.splice(i,1);
+    	if ($scope.containsSelection(selectionId)) {
+        	BuildSlipService.removeSelection(selectionId);
     	} else {
-        	BuildSlipService.addSelection(id);
-        	$scope.slip.selections.push(id);
+        	BuildSlipService.addSelection(selectionId);
     	}
     };
     
@@ -113,5 +111,6 @@ angular.module('appKiosk')
     	clearSlip();
     	BuildSlipService.subscribeToSlipUpdates()
     		.then(function () {}, function () {}, updateSlip);
+    	BuildSlipService.requestSlipUpdate();
     });
 });

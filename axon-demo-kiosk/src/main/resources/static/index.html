@@ -62,17 +62,17 @@
 				</tr>
 	            <tr>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[0].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[0].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[0].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[0].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[0]) }}
 						</button>
 					</td>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[1].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[1].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[1].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[1].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[1]) }}
 						</button>
 					</td>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[2].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[2].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[2].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[2].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[2]) }}
 						</button>
 					</td>
