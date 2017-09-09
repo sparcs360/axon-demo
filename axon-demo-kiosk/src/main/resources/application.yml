@@ -36,3 +36,13 @@ spring:
       settings:
         web-allow-others:  true
         trace: false
+
+eureka:
+  instance:
+    appname: kiosk
+    instance-id: ${kiosk.shop.id}-${kiosk.index}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://discovery:8761/eureka/

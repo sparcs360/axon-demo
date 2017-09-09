@@ -37,3 +37,13 @@ spring:
       settings:
         web-allow-others:  true
         trace: false
+
+eureka:
+  instance:
+    appname: counter
+    instance-id: ${counter.shop.id}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://discovery:8761/eureka/
