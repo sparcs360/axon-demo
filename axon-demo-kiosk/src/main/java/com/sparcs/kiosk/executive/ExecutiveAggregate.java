@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sparcs.kiosk.executive.account.Account;
 import com.sparcs.kiosk.executive.account.EBalanceReset;
+import com.sparcs.kiosk.executive.slipbuild.EPotentialSlipCleared;
 import com.sparcs.kiosk.executive.slipbuild.PotentialSlip;
 
 import lombok.NoArgsConstructor;
@@ -52,8 +53,9 @@ public class ExecutiveAggregate {
 		
 		LOG.trace("handle(cmd={})", cmd);
 		AggregateLifecycle
-			.apply(new EKioskReset(cmd.getKioskId(), cmd.getReason()))
-			.andThenApply(() -> new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()));
+			.apply(new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()))
+			.andThenApply(() -> EPotentialSlipCleared.builder().kioskId(cmd.getKioskId()).build())
+			.andThenApply(() -> EKioskReset.builder().kioskId(cmd.getKioskId()).reason(cmd.getReason()).build());
 	}
 
 	@EventSourcingHandler
