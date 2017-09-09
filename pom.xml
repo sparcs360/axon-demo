@@ -21,6 +21,7 @@
 
 	<modules>
 		<module>axon-demo-common</module>
+		<module>axon-demo-discovery</module>
 		<module>axon-demo-kiosk-common</module>
 		<module>axon-demo-kiosk</module>
 		<module>axon-demo-counter</module>
