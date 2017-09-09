@@ -3,14 +3,6 @@
 angular.module('appKiosk')
 .controller('KioskCtrl', function ($scope, SocketService, KioskService) {
 	
-    function updateBalance(data) {
-        $scope.balance = data / 100;
-    };
-
-    $scope.depositCash = function (amount) {
-    	KioskService.depositCash(amount);
-    };
-    
     SocketService.connect().then(function () {
     	KioskService
     		.subscribeToBalanceUpdates()
@@ -18,9 +10,54 @@ angular.module('appKiosk')
     	KioskService.requestBalanceUpdate();
     });
 
+    $scope.depositCash = function (amount) {
+    	KioskService.depositCash(amount);
+    };
+    
+    function updateBalance(data) {
+        $scope.balance = data / 100;
+    };
 })
 .controller('BuildSlipCtrl', function ($scope, SocketService, BuildSlipService) {
 	
+    SocketService.connect().then(function () {
+    	getEvents();
+    	BuildSlipService.subscribeToSlipUpdates()
+    		.then(function () {}, function () {}, updateSlip);
+    	BuildSlipService.requestSlipUpdate();
+    });
+    
+	$scope.slip = {
+			
+		"selections": []
+	};
+	
+	$scope.clearSlip = function() {
+		
+		BuildSlipService.clearSlip();
+	}
+	
+    $scope.containsSelection = function(selectionId) {
+		return $.grep($scope.slip.selections, (s) => s.selectionId == selectionId).length > 0;
+	}
+
+    $scope.prettyPrintSelection = function (selection) {
+    	return selection.name + ' @ ' + selection.numerator + '/' + selection.denominator;
+    };
+    
+	$scope.getSelectionButtonClass = function(selectionId) {
+    	return ($scope.containsSelection(selectionId)) ? 'btn-primary' : 'btn-default';
+    };
+    
+    $scope.toggleSelection = function (selectionId) {
+    	
+    	if ($scope.containsSelection(selectionId)) {
+        	BuildSlipService.removeSelection(selectionId);
+    	} else {
+        	BuildSlipService.addSelection(selectionId);
+    	}
+    };
+    
 	function getEvents() {
 		
 	    $scope.events = [
@@ -74,43 +111,7 @@ angular.module('appKiosk')
 	    ];
 	}
 	
-	function clearSlip() {
-		
-		$scope.slip = {
-			selections: []
-		};
-	}
-	
     function updateSlip(data) {
     	$scope.slip.selections = data.selections;
     };
-
-    $scope.containsSelection = function(selectionId) {
-		return $.grep($scope.slip.selections, (s) => s.selectionId == selectionId).length > 0;
-	}
-
-    $scope.prettyPrintSelection = function (selection) {
-    	return selection.name + ' @ ' + selection.numerator + '/' + selection.denominator;
-    };
-    
-	$scope.getSelectionButtonClass = function(selectionId) {
-    	return ($scope.containsSelection(selectionId)) ? 'btn-primary' : 'btn-default';
-    };
-    
-    $scope.toggleSelection = function (selectionId) {
-    	
-    	if ($scope.containsSelection(selectionId)) {
-        	BuildSlipService.removeSelection(selectionId);
-    	} else {
-        	BuildSlipService.addSelection(selectionId);
-    	}
-    };
-    
-    SocketService.connect().then(function () {
-    	getEvents();
-    	clearSlip();
-    	BuildSlipService.subscribeToSlipUpdates()
-    		.then(function () {}, function () {}, updateSlip);
-    	BuildSlipService.requestSlipUpdate();
-    });
 });

@@ -37,9 +37,7 @@ angular.module('appKiosk')
         },
     	requestBalanceUpdate: function () {
         	console.log('requestBalanceUpdate() -> SEND /kiosk/commands/account/balance/get');
-        	var response = $stomp.send('/kiosk/commands/account/balance/get');
-        	console.log('requestBalanceUpdate() <- ' + JSON.stringify(response));
-        	return response;
+        	$stomp.send('/kiosk/commands/account/balance/get');
         },
         subscribeToBalanceUpdates: function () {
             var deferred = $q.defer();
@@ -55,6 +53,10 @@ angular.module('appKiosk')
 .service('BuildSlipService', function ($stomp, $q) {
 
 	return {
+		clearSlip: function() {
+        	console.log('clearSlip() -> SEND /kiosk/commands/slip/clear');
+        	$stomp.send('/kiosk/commands/slip/clear');
+		},
 		addSelection: function(id) {
         	console.log('addSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/add');
         	$stomp.send('/kiosk/commands/slip/selection/add', {"selectionId":id});
@@ -65,9 +67,7 @@ angular.module('appKiosk')
 		},
     	requestSlipUpdate: function () {
         	console.log('requestSlipUpdate() -> SEND /kiosk/commands/slip/get');
-        	var response = $stomp.send('/kiosk/commands/slip/get');
-        	console.log('requestSlipUpdate() <- ' + JSON.stringify(response));
-        	return response;
+        	$stomp.send('/kiosk/commands/slip/get');
         },
         subscribeToSlipUpdates: function () {
             var deferred = $q.defer();
