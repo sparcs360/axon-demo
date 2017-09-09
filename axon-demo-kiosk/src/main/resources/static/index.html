@@ -80,7 +80,14 @@
 			</tbody>
             <tbody>
 	            <tr ng-if="events.length == 0">
-	                <td colspan="4">There are no active events</td>
+	                <td colspan="3">There are no active events</td>
+	            </tr>
+            </tbody>
+            <tbody>
+	            <tr ng-if="slip.selections.length > 0">
+	                <td align="right" colspan="3">
+						<button ng-click="clearSlip()" class="btn btn-sm btn-info" type="submit">Clear Slip</button>
+					</td>
 	            </tr>
             </tbody>
 		</table>
