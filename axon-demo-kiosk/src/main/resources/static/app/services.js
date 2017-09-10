@@ -39,8 +39,11 @@ angular.module('appKiosk')
     		});
     	},
         depositCash: function (amount) {
-        	console.log('depositCash(amount=' + amount + ') -> SEND /kiosk/commands/account/deposit/cash');
-        	$stomp.send('/kiosk/commands/account/deposit/cash', {'amount': amount});
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.account.CDepositCash';
+        	var destination = destinationBase + commandName;
+        	console.log('depositCash(amount=' + amount + ') -> SEND ' + destination);
+        	$stomp.send(destination, {'amount': amount});
         },
     	requestBalanceUpdate: function () {
         	console.log('requestBalanceUpdate() -> SEND /kiosk/commands/account/balance/get');
