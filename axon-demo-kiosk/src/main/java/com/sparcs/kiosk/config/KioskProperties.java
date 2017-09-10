@@ -17,13 +17,13 @@ public class KioskProperties {
 	
 	@Autowired
 	KioskProperties(
-			@Value("${kiosk.shop.id}") String shopId,
-			@Value("${kiosk.index}") String index,
-			@Value("${kiosk.amqp.host-name}") String amqpHostName,
-			@Value("${kiosk.amqp.kiosk-events-out.exchange-name}") String amqpKioskEventsOutExchangeName,
-			@Value("${kiosk.amqp.kiosk-commands-in.exchange-name}") String amqpKioskCommandsInExchangeName,
-			@Value("${kiosk.amqp.kiosk-commands-in.queue-name}") String amqpKioskCommandsInQueueName) {
-		
+			@Value("${info.shop.id}") String shopId,
+			@Value("${info.kiosk-index}") String index,
+			@Value("${info.amqp.host-name}") String amqpHostName,
+			@Value("${info.amqp.kiosk-events-out.exchange-name}") String amqpKioskEventsOutExchangeName,
+			@Value("${info.amqp.kiosk-commands-in.exchange-name}") String amqpKioskCommandsInExchangeName,
+			@Value("${info.amqp.kiosk-commands-in.queue-name}") String amqpKioskCommandsInQueueName) {
+
 		this.shopId = shopId;
 		this.index = index;
 		this.kioskId = String.format("%s-%s", shopId, index);

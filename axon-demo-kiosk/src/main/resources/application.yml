@@ -1,14 +1,14 @@
-kiosk:
+info:
   shop:
     id: "000001"
-  index: "01"
+  kiosk-index: "01"
   amqp:
     host-name: rabbitmq
     kiosk-events-out:
-      exchange-name: EVT-${kiosk.shop.id}
+      exchange-name: EVT-${info.shop.id}
     kiosk-commands-in:
-      exchange-name: CMD-${kiosk.shop.id}
-      queue-name: CMD-KIOSK-${kiosk.shop.id}-${kiosk.index}
+      exchange-name: CMD-${info.shop.id}
+      queue-name: CMD-KIOSK-${info.shop.id}-${info.kiosk-index}
 
 spring:
   application:
@@ -40,7 +40,7 @@ spring:
 eureka:
   instance:
     appname: kiosk
-    instance-id: ${kiosk.shop.id}-${kiosk.index}
+    instance-id: ${info.shop.id}-${info.kiosk-index}
   client:
     register-with-eureka: true
     fetch-registry: true
