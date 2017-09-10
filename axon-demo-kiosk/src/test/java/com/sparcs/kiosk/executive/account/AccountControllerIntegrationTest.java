@@ -1,4 +1,4 @@
-package com.sparcs.kiosk.controller;
+package com.sparcs.kiosk.executive.account;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -35,10 +35,8 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.sparcs.kiosk.Application;
 import com.sparcs.kiosk.executive.CResetKiosk;
-import com.sparcs.kiosk.executive.account.CDepositCash;
 
-// References
-// http://rafaelhz.github.io/testing-websockets/
+// Credit for basic WebSocket TestRig: http://rafaelhz.github.io/testing-websockets/
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=Application.class, webEnvironment=WebEnvironment.DEFINED_PORT)
@@ -48,16 +46,17 @@ public class AccountControllerIntegrationTest {
     private static final String KIOSK_ID = "000001-01";
 
 	static final String WEBSOCKET_URI = "http://localhost:8080/kiosk-websocket";
-    static final String ACCOUNT_CMD_INSERT_NOTE = "/kiosk/commands/account/deposit/cash";
+    static final String SEND_COMMAND_DESTINATION = "/kiosk/commands/send";
+    static final String CMD_DEPOSIT_CASH = "executive.account.CDepositCash";
     static final String ACCOUNT_SUB_SUMMARY = "/topic/account/balance";
-    
+
+	private static final int AMOUNT = 337;
+	
     static final int SECONDS_TO_WAIT_FOR_RESPONSE = 1;
 
     BlockingQueue<Object> receivedResponses;
     WebSocketStompClient stompClient;
     StompSession session;
-    
-    CDepositCash aDepositCashCommand;
     
     @Autowired
     private CommandGateway commandGateway;
@@ -71,8 +70,6 @@ public class AccountControllerIntegrationTest {
         stompClient = new WebSocketStompClient(new SockJsClient(
                 Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()))));
         stompClient.setMessageConverter(messageConverter);
-
-		aDepositCashCommand = CDepositCash.builder().kioskId(KIOSK_ID).amount(337).build();
     }
 
     @After
@@ -87,7 +84,7 @@ public class AccountControllerIntegrationTest {
         givenClientConnectedTo(WEBSOCKET_URI);
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
 
-		whenClientSendsCommand(aDepositCashCommand);
+		whenClientSendsCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
 		thenShouldReceiveReply(337);
     }
@@ -97,11 +94,11 @@ public class AccountControllerIntegrationTest {
 
         givenClientConnectedTo(WEBSOCKET_URI);
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
-		givenClientSentCommandAndReceivedResponse(aDepositCashCommand);
+		givenClientSentCommandAndReceivedResponse(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
-		whenClientSendsCommand(aDepositCashCommand);
+		whenClientSendsCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
-		thenShouldReceiveReply(674);
+		thenShouldReceiveReply(AMOUNT + AMOUNT);
     }
 
 	private void thenShouldReceiveReply(Object expectedResponse) throws Exception {
@@ -123,18 +120,18 @@ public class AccountControllerIntegrationTest {
 		return session.subscribe(destination, new StompConversation(responseType));
 	}
 
-	private Receiptable givenClientSentCommandAndReceivedResponse(Object payload) throws Exception {
+	private Receiptable givenClientSentCommandAndReceivedResponse(String name, String payload) throws Exception {
 
-		Receiptable receiptable = session.send(ACCOUNT_CMD_INSERT_NOTE, payload);
+		Receiptable receiptable = session.send(String.format("%s/%s", SEND_COMMAND_DESTINATION, name), payload);
 		Object actualResponse = receivedResponses.poll(SECONDS_TO_WAIT_FOR_RESPONSE, TimeUnit.SECONDS);
 		assertThat("timeout waiting for event", actualResponse, notNullValue());
 		assertThat(receivedResponses.isEmpty(), is(true));
 		return receiptable;
 	}
 
-	private Receiptable whenClientSendsCommand(Object payload) {
+	private Receiptable whenClientSendsCommand(String name, String payload) {
 
-		return session.send(ACCOUNT_CMD_INSERT_NOTE, payload);
+		return session.send(String.format("%s/%s", SEND_COMMAND_DESTINATION, name), payload);
 	}
 
     class StompConversation implements StompFrameHandler {

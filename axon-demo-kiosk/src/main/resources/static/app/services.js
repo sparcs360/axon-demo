@@ -39,8 +39,11 @@ angular.module('appKiosk')
     		});
     	},
         depositCash: function (amount) {
-        	console.log('depositCash(amount=' + amount + ') -> SEND /kiosk/commands/account/deposit/cash');
-        	$stomp.send('/kiosk/commands/account/deposit/cash', {'amount': amount});
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.account.CDepositCash';
+        	var destination = destinationBase + commandName;
+        	console.log('depositCash(amount=' + amount + ') -> SEND ' + destination);
+        	$stomp.send(destination, {'amount': amount});
         },
     	requestBalanceUpdate: function () {
         	console.log('requestBalanceUpdate() -> SEND /kiosk/commands/account/balance/get');
@@ -61,16 +64,25 @@ angular.module('appKiosk')
 
 	return {
 		clearSlip: function() {
-        	console.log('clearSlip() -> SEND /kiosk/commands/slip/clear');
-        	$stomp.send('/kiosk/commands/slip/clear');
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CClearPotentialSlip';
+        	var destination = destinationBase + commandName;
+        	console.log('clearSlip() -> SEND ' + destination);
+        	$stomp.send(destination, {});
 		},
-		addSelection: function(id) {
-        	console.log('addSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/add');
-        	$stomp.send('/kiosk/commands/slip/selection/add', {"selectionId":id});
+		addSelection: function(selectionId) {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CAddSelection';
+        	var destination = destinationBase + commandName;
+        	console.log('addSelection(selectionId=' + selectionId + ') -> SEND ' + destination);
+        	$stomp.send(destination, {"selectionId":selectionId});
 		},
-		removeSelection: function(id) {
-        	console.log('removeSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/remove');
-        	$stomp.send('/kiosk/commands/slip/selection/remove', {"selectionId":id});
+		removeSelection: function(selectionId) {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CRemoveSelection';
+        	var destination = destinationBase + commandName;
+        	console.log('removeSelection(selectionId=' + selectionId + ') -> SEND ' + destination);
+        	$stomp.send(destination, {"selectionId":selectionId});
 		},
     	requestSlipUpdate: function () {
         	console.log('requestSlipUpdate() -> SEND /kiosk/commands/slip/get');
