@@ -28,9 +28,16 @@ angular.module('appKiosk')
         }
     };
 })
-.service('KioskService', function ($stomp, $q) {
+.service('KioskService', function ($stomp, $q, $http) {
 
     return {
+    	getKioskInfo: function () {
+        	console.log('getKioskInfo() -> GET /info');
+    		return $q(function(resolve, reject) {
+        	    $http.get('/info')
+        	    	 .then((response) => resolve(response.data), (response) => reject(response));
+    		});
+    	},
         depositCash: function (amount) {
         	console.log('depositCash(amount=' + amount + ') -> SEND /kiosk/commands/account/deposit/cash');
         	$stomp.send('/kiosk/commands/account/deposit/cash', {'amount': amount});
