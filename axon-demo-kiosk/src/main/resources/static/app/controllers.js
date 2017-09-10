@@ -4,6 +4,10 @@ angular.module('appKiosk')
 .controller('KioskCtrl', function ($scope, SocketService, KioskService) {
 	
     SocketService.connect().then(function () {
+
+    	KioskService.getKioskInfo()
+    		.then((data) => $scope.info = data);
+
     	KioskService
     		.subscribeToBalanceUpdates()
     		.then(function () {}, function () {}, updateBalance);
