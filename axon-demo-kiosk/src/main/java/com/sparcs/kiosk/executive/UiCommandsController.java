@@ -12,6 +12,7 @@ import org.springframework.core.NestedRuntimeException;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -81,7 +82,12 @@ public class UiCommandsController {
 
 	private Map<String, Object> addKioskIdToPayload(String payload) throws IOException {
 
-		Map<String, Object> asMap = objectMapper.readValue(payload, TYPEREF_MAP);
+		Map<String, Object> asMap;
+		if (StringUtils.hasLength(payload)) {
+			asMap = objectMapper.readValue(payload, TYPEREF_MAP);
+		} else {
+			asMap = new HashMap<>();
+		}
 		asMap.put("kioskId", kioskProperties.getKioskId());
 		LOG.trace("asMap={}", asMap);
 		return asMap;

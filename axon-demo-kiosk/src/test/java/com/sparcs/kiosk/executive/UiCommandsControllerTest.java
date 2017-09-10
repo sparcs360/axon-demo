@@ -17,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.sparcs.kiosk.config.KioskProperties;
 import com.sparcs.kiosk.executive.account.CDepositCash;
+import com.sparcs.kiosk.executive.slipbuild.CClearPotentialSlip;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UiCommandsControllerTest {
@@ -55,7 +56,7 @@ public class UiCommandsControllerTest {
 	}
 
 	@Test(expected = UiCommandsController.InvalidCommandException.class)
-	public void when_PayloadDoesntMatchCommandName_then_ShouldThrowException() {
+	public void when_PayloadDoesntDeserialiseToTheCommand_then_ShouldThrowException() {
 
 		unitUnderTest.sendCommand("executive.account.CDepositCash", "{}");
 	}
@@ -91,5 +92,38 @@ public class UiCommandsControllerTest {
 
 		CDepositCash command = (CDepositCash) commandCaptor.getValue();
 		assertThat(command.getAmount(), is(AMOUNT));
+	}
+
+	@Test
+	public void when_ValidCommandHasNoPayload_and_EmptyObjectProvided_then_ShouldDispatchExpectedCommandViaCommandGateway() {
+
+		unitUnderTest.sendCommand("executive.slipbuild.CClearPotentialSlip", "{}");
+		
+		verify(mockCommandGateway).send(commandCaptor.capture());
+
+		Object actual = commandCaptor.getValue();
+		assertThat(actual, is(instanceOf(CClearPotentialSlip.class)));
+	}
+
+	@Test
+	public void when_ValidCommandHasNoPayload_and_EmptyStringProvided_then_ShouldDispatchExpectedCommandViaCommandGateway() {
+
+		unitUnderTest.sendCommand("executive.slipbuild.CClearPotentialSlip", "");
+		
+		verify(mockCommandGateway).send(commandCaptor.capture());
+
+		Object actual = commandCaptor.getValue();
+		assertThat(actual, is(instanceOf(CClearPotentialSlip.class)));
+	}
+
+	@Test
+	public void when_ValidCommandHasNoPayload_and_NullProvided_then_ShouldDispatchExpectedCommandViaCommandGateway() {
+
+		unitUnderTest.sendCommand("executive.slipbuild.CClearPotentialSlip", null);
+		
+		verify(mockCommandGateway).send(commandCaptor.capture());
+
+		Object actual = commandCaptor.getValue();
+		assertThat(actual, is(instanceOf(CClearPotentialSlip.class)));
 	}
 }
