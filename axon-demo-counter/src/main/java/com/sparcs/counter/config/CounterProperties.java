@@ -13,11 +13,11 @@ public class CounterProperties {
 	private final String amqpKioskCommandsOutExchangeName;
 	
 	public CounterProperties(
-			@Value("${counter.shop.id}") String shopId,
-			@Value("${counter.amqp.host-name}") String amqpHostName,
-			@Value("${counter.amqp.kiosk-events-in.exchange-name}") String amqpKioskEventsInExchangeName,
-			@Value("${counter.amqp.kiosk-events-in.queue-name}") String amqpKioskEventsInQueueName,
-			@Value("${counter.amqp.kiosk-commands-out.exchange-name}") String amqpKioskCommandsOutExchangeName) {
+			@Value("${info.shop.id}") String shopId,
+			@Value("${info.amqp.host-name}") String amqpHostName,
+			@Value("${info.amqp.kiosk-events-in.exchange-name}") String amqpKioskEventsInExchangeName,
+			@Value("${info.amqp.kiosk-events-in.queue-name}") String amqpKioskEventsInQueueName,
+			@Value("${info.amqp.kiosk-commands-out.exchange-name}") String amqpKioskCommandsOutExchangeName) {
 
 		this.shopId = shopId;
 		this.amqpHostName = amqpHostName;
