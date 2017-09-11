@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -16,10 +17,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -28,9 +32,12 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.sparcs.kiosk.Application;
@@ -45,7 +52,7 @@ public class AccountControllerIntegrationTest {
 
     private static final String KIOSK_ID = "000001-01";
 
-	static final String WEBSOCKET_URI = "http://localhost:8080/kiosk-websocket";
+	static final String WEBSOCKET_URI = "ws://localhost:8080/kiosk-websocket";
     static final String SEND_COMMAND_DESTINATION = "/kiosk/commands/send";
     static final String CMD_DEPOSIT_CASH = "executive.account.CDepositCash";
     static final String ACCOUNT_SUB_SUMMARY = "/topic/account/balance";
@@ -55,7 +62,7 @@ public class AccountControllerIntegrationTest {
     static final int SECONDS_TO_WAIT_FOR_RESPONSE = 1;
 
     BlockingQueue<Object> receivedResponses;
-    WebSocketStompClient stompClient;
+    WebSocketStompClient webSocketStompClient;
     StompSession session;
     
     @Autowired
@@ -67,15 +74,21 @@ public class AccountControllerIntegrationTest {
     public void before() throws Exception {
     	
         receivedResponses = new LinkedBlockingDeque<>();
-        stompClient = new WebSocketStompClient(new SockJsClient(
-                Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()))));
-        stompClient.setMessageConverter(messageConverter);
+
+        WebSocketClient webSocketClient = new StandardWebSocketClient();
+		List<Transport> transports = Arrays.asList(new WebSocketTransport(webSocketClient), new RestTemplateXhrTransport());
+		SockJsClient sockJsClient = new SockJsClient(transports);
+		webSocketStompClient = new WebSocketStompClient(sockJsClient);
+        webSocketStompClient.setMessageConverter(messageConverter);
     }
 
     @After
     public void after() {
-    	session.disconnect();
-    	commandGateway.sendAndWait(CResetKiosk.builder().kioskId(KIOSK_ID).reason("to reset balance").build());
+    	
+    	if (session != null) {
+	    	session.disconnect();
+	    	commandGateway.sendAndWait(CResetKiosk.builder().kioskId(KIOSK_ID).reason("to reset balance").build());
+    	}
     }
 
     @Test
@@ -110,9 +123,9 @@ public class AccountControllerIntegrationTest {
 
 	private void givenClientConnectedTo(String uri) throws Exception {
 		
-		session = stompClient
-                .connect(uri, new StompSessionHandlerAdapter() {})
-                .get(1, TimeUnit.SECONDS);
+		session = webSocketStompClient
+                .connect(uri, new StompSessionHandler())
+                .get(SECONDS_TO_WAIT_FOR_RESPONSE, TimeUnit.SECONDS);
 	}
     
 	private Subscription givenClientSubscribesTo(String destination, Class<?> responseType) {
@@ -134,6 +147,31 @@ public class AccountControllerIntegrationTest {
 		return session.send(String.format("%s/%s", SEND_COMMAND_DESTINATION, name), payload);
 	}
 
+	static class StompSessionHandler extends StompSessionHandlerAdapter {
+
+		private static final Logger LOG = LoggerFactory.getLogger(AccountControllerIntegrationTest.StompSessionHandler.class);
+
+		@Override
+		public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+			LOG.debug("afterConnected(session={}, connectedHeaders={})", session, connectedHeaders);
+		}
+		
+		@Override
+		public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+			LOG.debug("handleException(session={}, command={}, headers={}, payload={}, exception={})", session, command, headers, payload, exception);
+		}
+		
+		@Override
+		public void handleFrame(StompHeaders headers, Object payload) {
+			LOG.debug("handleFrame(headers={}, payload={})", headers, payload);
+		}
+		
+		@Override
+		public void handleTransportError(StompSession session, Throwable exception) {
+			LOG.debug("handleTransportError(session={}, exception={})", session, exception);
+		}
+	}
+	
     class StompConversation implements StompFrameHandler {
     	
     	private Class<?> clazz;
