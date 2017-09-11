@@ -12,6 +12,7 @@ services:
       - "30010:8081"    # Web API
     environment:
       SPRING_PROFILES_ACTIVE: ${COUNTER_PROFILES_ACTIVE}
+      DISCOVERY_SERVER_HOSTNAME: ${DISCOVERY_SERVER_HOSTNAME}
       SHOP_ID: "000001"
 
   kiosk1_1:
@@ -24,6 +25,7 @@ services:
       - "30011:8080"    # Web API
     environment:
       SPRING_PROFILES_ACTIVE: ${KIOSK_PROFILES_ACTIVE}
+      DISCOVERY_SERVER_HOSTNAME: ${DISCOVERY_SERVER_HOSTNAME}
       SHOP_ID: "000001"
       KIOSK_INDEX: "01"
 
@@ -36,6 +38,7 @@ services:
       - "30012:8080"    # Web API
     environment:
       SPRING_PROFILES_ACTIVE: ${KIOSK_PROFILES_ACTIVE}
+      DISCOVERY_SERVER_HOSTNAME: ${DISCOVERY_SERVER_HOSTNAME}
       SHOP_ID: "000001"
       KIOSK_INDEX: "02"
 
@@ -48,6 +51,7 @@ services:
       - "30020:8081"    # Web API
     environment:
       SPRING_PROFILES_ACTIVE: ${COUNTER_PROFILES_ACTIVE}
+      DISCOVERY_SERVER_HOSTNAME: ${DISCOVERY_SERVER_HOSTNAME}
       SHOP_ID: "000002"
 
   kiosk2_1:
@@ -59,6 +63,7 @@ services:
       - "30021:8080"    # Web API
     environment:
       SPRING_PROFILES_ACTIVE: ${KIOSK_PROFILES_ACTIVE}
+      DISCOVERY_SERVER_HOSTNAME: ${DISCOVERY_SERVER_HOSTNAME}
       SHOP_ID: "000002"
       KIOSK_INDEX: "01"
 
@@ -68,10 +73,3 @@ services:
     ports:
       - "5672:5672"     # AMQP
       - "15672:15672"   # Management Web UI & API
-
-  discovery:
-    build: axon-demo-discovery/
-    image: sparcs/discovery
-    container_name: discovery
-    ports:
-      - "8761:8761"    # Web API
