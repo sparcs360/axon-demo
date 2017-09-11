@@ -1,7 +1,6 @@
 package com.sparcs.kiosk;
 
-import org.axonframework.commandhandling.CommandBus;
-import org.axonframework.commandhandling.GenericCommandMessage;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -25,12 +24,12 @@ public class Application {
 	}
 	
 	@Bean
-	CommandLineRunner initialise(CommandBus commandBus, KioskProperties kioskProperties) {
+	CommandLineRunner initialise(CommandGateway commandGateway, KioskProperties kioskProperties) {
 		
 		return((args) -> {
 
 	        CStartKiosk cmd = new CStartKiosk(kioskProperties.getKioskId());
-			commandBus.dispatch(GenericCommandMessage.asCommandMessage(cmd));
+	        commandGateway.send(cmd);
 
 			LOG.info("Kiosk #{} Ready", kioskProperties.getKioskId());
 		});
