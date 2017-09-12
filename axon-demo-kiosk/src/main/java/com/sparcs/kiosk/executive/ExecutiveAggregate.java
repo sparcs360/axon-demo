@@ -53,7 +53,7 @@ public class ExecutiveAggregate {
 		
 		LOG.trace("handle(cmd={})", cmd);
 		AggregateLifecycle
-			.apply(new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()))
+			.apply(EBalanceReset.builder().kioskId(cmd.getKioskId()).balance(0).amount(-account.getBalance()))
 			.andThenApply(() -> EPotentialSlipCleared.builder().kioskId(cmd.getKioskId()).build())
 			.andThenApply(() -> EKioskReset.builder().kioskId(cmd.getKioskId()).reason(cmd.getReason()).build());
 	}

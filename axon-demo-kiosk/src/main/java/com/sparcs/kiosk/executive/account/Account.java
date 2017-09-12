@@ -26,7 +26,7 @@ public class Account {
 		if (cmd.getAmount() <= 0) {
 			throw new InvalidGBPAmountException();
 		}
-		AggregateLifecycle.apply(new ECashDeposited(cmd.getKioskId(), balance + cmd.getAmount(), cmd.getAmount()));
+		AggregateLifecycle.apply(ECashDeposited.builder().kioskId(cmd.getKioskId()).balance(balance + cmd.getAmount()).amount(cmd.getAmount()));
 	}
 	
 	@CommandHandler
@@ -36,7 +36,7 @@ public class Account {
 		if (cmd.getAmount() <= 0) {
 			throw new InvalidGBPAmountException();
 		}
-		AggregateLifecycle.apply(new ECreditAdded(cmd.getKioskId(), balance + cmd.getAmount(), cmd.getAmount()));
+		AggregateLifecycle.apply(ECreditAdded.builder().kioskId(cmd.getKioskId()).balance(balance + cmd.getAmount()).amount(cmd.getAmount()));
 	}
 	
 	@CommandHandler
@@ -51,7 +51,7 @@ public class Account {
 			LOG.info("Amount to remove is more than current balance - reducing balance to zero");
 			amountToRemove = balance;
 		}
-		AggregateLifecycle.apply(new ECreditRemoved(cmd.getKioskId(), balance - amountToRemove, amountToRemove));
+		AggregateLifecycle.apply(ECreditRemoved.builder().kioskId(cmd.getKioskId()).balance(balance - amountToRemove).amount(amountToRemove));
 	}
 
 	@EventSourcingHandler
