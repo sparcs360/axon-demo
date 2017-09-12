@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.ToString;
 
 @ToString(callSuper=true)
-@Builder
 public class EBalanceReset extends EBalanceDecreased {
 
 	protected EBalanceReset() {
 		super();
 	}
 
-	public EBalanceReset(String kioskId, int balance, int amount) {
-		super(kioskId, balance, amount);
+	@Builder
+	private EBalanceReset(String kioskId, int amount) {
+		super(kioskId, 0, amount);
 	}
 }

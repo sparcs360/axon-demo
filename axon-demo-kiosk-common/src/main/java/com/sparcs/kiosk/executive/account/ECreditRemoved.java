@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.ToString;
 
 @ToString(callSuper=true)
-@Builder
 public class ECreditRemoved extends EBalanceDecreased {
 
 	protected ECreditRemoved() {
 		super();
 	}
 	
-	public ECreditRemoved(String kioskId, int balance, int amount) {
+	@Builder
+	private ECreditRemoved(String kioskId, int balance, int amount) {
 		super(kioskId, balance, amount);
 	}
 }

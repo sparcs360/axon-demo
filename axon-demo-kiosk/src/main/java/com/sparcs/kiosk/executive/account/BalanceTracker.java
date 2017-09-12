@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
-import lombok.Getter;
 import lombok.ToString;
 
 @Component
@@ -15,6 +14,8 @@ import lombok.ToString;
 public class BalanceTracker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BalanceTracker.class);
+
+	public static final String TOPIC_NAME = "/topic/account/balance";
 
     private SimpMessageSendingOperations messagingTemplate;
     
@@ -24,17 +25,25 @@ public class BalanceTracker {
     	this.messagingTemplate = messagingTemplate;
     }
     
-	@Getter
 	private int balance;
+	
+	public synchronized int getBalance() {
+		
+		return balance;
+	}
 	
 	@EventHandler
 	void on(EBalanceChanged event) {
 		
 		LOG.trace("on(event={})", event);
 
-		balance = event.getBalance();
+		publish(event.getBalance());
+	}
+
+	private synchronized void publish(int balance) {
+
 		LOG.debug("Publishing balance={}", balance);
-		messagingTemplate.convertAndSend("/topic/account/balance", balance);
+		messagingTemplate.convertAndSend(TOPIC_NAME, balance);
 	}
 
 }

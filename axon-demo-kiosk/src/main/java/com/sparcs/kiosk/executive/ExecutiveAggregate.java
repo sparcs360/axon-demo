@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sparcs.kiosk.executive.account.Account;
 import com.sparcs.kiosk.executive.account.EBalanceReset;
+import com.sparcs.kiosk.executive.slipbuild.EPotentialSlipCleared;
 import com.sparcs.kiosk.executive.slipbuild.PotentialSlip;
 
 import lombok.NoArgsConstructor;
@@ -43,7 +44,7 @@ public class ExecutiveAggregate {
 		LOG.trace("on(event={})", event);
 
 		this.kioskId = event.getKioskId();
-		this.account = Account.INSTANCE;
+		this.account = Account.builder().build();
 		this.potentialSlip = PotentialSlip.builder().build();
 	}
 
@@ -52,13 +53,20 @@ public class ExecutiveAggregate {
 		
 		LOG.trace("handle(cmd={})", cmd);
 		AggregateLifecycle
-			.apply(new EKioskReset(cmd.getKioskId(), cmd.getReason()))
-			.andThenApply(() -> new EBalanceReset(cmd.getKioskId(), 0, -account.getBalance()));
+			.apply(EBalanceReset.builder().kioskId(cmd.getKioskId()).amount(-account.getBalance()).build())
+			.andThenApply(() -> EPotentialSlipCleared.builder().kioskId(cmd.getKioskId()).build())
+			.andThenApply(() -> EKioskReset.builder().kioskId(cmd.getKioskId()).reason(cmd.getReason()).build());
 	}
 
 	@EventSourcingHandler
 	public void on(EKioskReset event) {
 		
 		LOG.trace("on(event={})", event);		
+	}
+
+	// TODO: Bad smell here... but, what's the alternative?  Do I really have to build an identical copy
+	// by listening to the same Events on the "query side"?
+	public PotentialSlip getCopyOfPotentialSlip() {
+		return potentialSlip.toBuilder().build();
 	}
 }

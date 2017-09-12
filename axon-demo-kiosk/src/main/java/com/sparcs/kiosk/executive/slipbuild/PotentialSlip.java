@@ -20,7 +20,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class PotentialSlip {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PotentialSlip.class);
@@ -29,6 +29,17 @@ public class PotentialSlip {
 	@Builder.Default
 	private List<PotentialSelection> selections = new ArrayList<>();
 	
+	@CommandHandler
+	public void handle(CClearPotentialSlip cmd) {
+		
+		LOG.trace("handle(cmd={})", cmd);
+
+		if (!selections.isEmpty()) {
+			
+			AggregateLifecycle.apply(EPotentialSlipCleared.builder().kioskId(cmd.getKioskId()).build());
+		}
+	}
+
 	@CommandHandler
 	public void handle(CAddSelection cmd) {
 		
@@ -72,6 +83,13 @@ public class PotentialSlip {
 					.build();
 			AggregateLifecycle.apply(event);
 		}
+	}
+
+	@EventSourcingHandler
+	public void on(EPotentialSlipCleared event) {
+		
+		LOG.trace("on(event={})", event);
+		selections.clear();
 	}
 
 	@EventSourcingHandler

@@ -21,6 +21,7 @@
 
 	<modules>
 		<module>axon-demo-common</module>
+		<module>axon-demo-discovery</module>
 		<module>axon-demo-kiosk-common</module>
 		<module>axon-demo-kiosk</module>
 		<module>axon-demo-counter</module>
@@ -88,6 +89,11 @@
 			<dependency>
 				<groupId>org.axonframework</groupId>
 				<artifactId>axon-distributed-commandbus-springcloud</artifactId>
+				<version>${axon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.axonframework</groupId>
+				<artifactId>axon-test</artifactId>
 				<version>${axon.version}</version>
 			</dependency>
 

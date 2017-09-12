@@ -19,7 +19,7 @@
 <nav ng-controller="KioskCtrl" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">Kiosk</a>
+            <a class="navbar-brand" href="/">Kiosk #{{info.shop.id}}-{{info['kiosk-index']}}</a>
         </div>
         <div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav navbar-right">
@@ -62,17 +62,17 @@
 				</tr>
 	            <tr>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[0].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[0].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[0].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[0].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[0]) }}
 						</button>
 					</td>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[1].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[1].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[1].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[1].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[1]) }}
 						</button>
 					</td>
 	                <td>
-						<button ng-click="toggleSelection(event.selections[2].id)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[2].id)" type="submit">
+						<button ng-click="toggleSelection(event.selections[2].selectionId)" class="btn btn-sm" ng-class="getSelectionButtonClass(event.selections[2].selectionId)" type="submit">
 							{{ prettyPrintSelection(event.selections[2]) }}
 						</button>
 					</td>
@@ -80,7 +80,14 @@
 			</tbody>
             <tbody>
 	            <tr ng-if="events.length == 0">
-	                <td colspan="4">There are no active events</td>
+	                <td colspan="3">There are no active events</td>
+	            </tr>
+            </tbody>
+            <tbody>
+	            <tr ng-if="slip.selections.length > 0">
+	                <td align="right" colspan="3">
+						<button ng-click="clearSlip()" class="btn btn-sm btn-info" type="submit">Clear Slip</button>
+					</td>
 	            </tr>
             </tbody>
 		</table>

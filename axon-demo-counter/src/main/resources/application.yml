@@ -1,16 +1,16 @@
 server:
   port: 8081
 
-counter:
+info:
   shop:
     id: "000001"
   amqp:
     host-name: rabbitmq
     kiosk-events-in:
-      exchange-name: EVT-${counter.shop.id}
-      queue-name: EVT-COUNTER-${counter.shop.id}
+      exchange-name: EVT-${info.shop.id}
+      queue-name: EVT-COUNTER-${info.shop.id}
     kiosk-commands-out:
-      exchange-name: CMD-${counter.shop.id}
+      exchange-name: CMD-${info.shop.id}
 
 spring:
   application:
@@ -37,3 +37,13 @@ spring:
       settings:
         web-allow-others:  true
         trace: false
+
+eureka:
+  instance:
+    appname: counter
+    instance-id: ${info.shop.id}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://discovery:8761/eureka/

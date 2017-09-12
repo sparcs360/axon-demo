@@ -28,18 +28,26 @@ angular.module('appKiosk')
         }
     };
 })
-.service('KioskService', function ($stomp, $q) {
+.service('KioskService', function ($stomp, $q, $http) {
 
     return {
+    	getKioskInfo: function () {
+        	console.log('getKioskInfo() -> GET /info');
+    		return $q(function(resolve, reject) {
+        	    $http.get('/info')
+        	    	 .then((response) => resolve(response.data), (response) => reject(response));
+    		});
+    	},
+        depositCash: function (amount) {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.account.CDepositCash';
+        	var destination = destinationBase + commandName;
+        	console.log('depositCash(amount=' + amount + ') -> SEND ' + destination);
+        	$stomp.send(destination, {'amount': amount});
+        },
     	requestBalanceUpdate: function () {
         	console.log('requestBalanceUpdate() -> SEND /kiosk/commands/account/balance/get');
-        	var response = $stomp.send('/kiosk/commands/account/balance/get');
-        	console.log('requestBalanceUpdate() <- ' + JSON.stringify(response));
-        	return response;
-        },
-        depositCash: function (amount) {
-        	console.log('depositCash(amount=' + amount + ') -> SEND /kiosk/commands/account/deposit/cash');
-        	$stomp.send('/kiosk/commands/account/deposit/cash', {'amount': amount});
+        	$stomp.send('/kiosk/commands/account/balance/get');
         },
         subscribeToBalanceUpdates: function () {
             var deferred = $q.defer();
@@ -55,14 +63,31 @@ angular.module('appKiosk')
 .service('BuildSlipService', function ($stomp, $q) {
 
 	return {
-		addSelection: function(id) {
-        	console.log('addSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/add');
-        	$stomp.send('/kiosk/commands/slip/selection/add', {"selectionId":id});
+		clearSlip: function() {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CClearPotentialSlip';
+        	var destination = destinationBase + commandName;
+        	console.log('clearSlip() -> SEND ' + destination);
+        	$stomp.send(destination, {});
 		},
-		removeSelection: function(id) {
-        	console.log('removeSelection(id=' + id + ') -> SEND /kiosk/commands/slip/selection/remove');
-        	$stomp.send('/kiosk/commands/slip/selection/remove', {"selectionId":id});
+		addSelection: function(selectionId) {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CAddSelection';
+        	var destination = destinationBase + commandName;
+        	console.log('addSelection(selectionId=' + selectionId + ') -> SEND ' + destination);
+        	$stomp.send(destination, {"selectionId":selectionId});
 		},
+		removeSelection: function(selectionId) {
+        	var destinationBase = '/kiosk/commands/send/';
+        	var commandName = 'executive.slipbuild.CRemoveSelection';
+        	var destination = destinationBase + commandName;
+        	console.log('removeSelection(selectionId=' + selectionId + ') -> SEND ' + destination);
+        	$stomp.send(destination, {"selectionId":selectionId});
+		},
+    	requestSlipUpdate: function () {
+        	console.log('requestSlipUpdate() -> SEND /kiosk/commands/slip/get');
+        	$stomp.send('/kiosk/commands/slip/get');
+        },
         subscribeToSlipUpdates: function () {
             var deferred = $q.defer();
         	console.log('subscribeToSlipUpdates() -> SUBSCRIBE /topic/slip');
