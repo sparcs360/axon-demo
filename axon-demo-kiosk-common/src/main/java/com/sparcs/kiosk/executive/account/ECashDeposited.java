@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.ToString;
 
 @ToString(callSuper=true)
-@Builder
 public class ECashDeposited extends EBalanceIncreased {
 
 	protected ECashDeposited() {
 		super();
 	}
 	
-	public ECashDeposited(String kioskId, int balance, int amount) {
+	@Builder
+	private ECashDeposited(String kioskId, int balance, int amount) {
 		super(kioskId, balance, amount);
 	}
 }
