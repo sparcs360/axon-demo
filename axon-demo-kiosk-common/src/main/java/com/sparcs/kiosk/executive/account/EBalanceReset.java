@@ -11,7 +11,7 @@ public class EBalanceReset extends EBalanceDecreased {
 	}
 
 	@Builder
-	private EBalanceReset(String kioskId, int balance, int amount) {
-		super(kioskId, balance, amount);
+	private EBalanceReset(String kioskId, int amount) {
+		super(kioskId, 0, amount);
 	}
 }

@@ -8,17 +8,22 @@ import org.slf4j.LoggerFactory;
 
 import com.sparcs.kiosk.executive.account.exception.InvalidGBPAmountException;
 
+import lombok.Builder;
+
 public class Account {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Account.class);
 
-    public static Account INSTANCE = new Account();
-
     private int balance;
     
+    @Builder
     private Account() {
     }
     
+    public synchronized int getBalance() {
+    	return balance;
+    }
+
 	@CommandHandler
 	public void handle(CDepositCash cmd) {
 		
@@ -26,7 +31,12 @@ public class Account {
 		if (cmd.getAmount() <= 0) {
 			throw new InvalidGBPAmountException();
 		}
-		AggregateLifecycle.apply(ECashDeposited.builder().kioskId(cmd.getKioskId()).balance(balance + cmd.getAmount()).amount(cmd.getAmount()));
+		AggregateLifecycle.apply(
+				ECashDeposited.builder()
+					.kioskId(cmd.getKioskId())
+					.balance(balance + cmd.getAmount())
+					.amount(cmd.getAmount())
+					.build());
 	}
 	
 	@CommandHandler
@@ -36,7 +46,7 @@ public class Account {
 		if (cmd.getAmount() <= 0) {
 			throw new InvalidGBPAmountException();
 		}
-		AggregateLifecycle.apply(ECreditAdded.builder().kioskId(cmd.getKioskId()).balance(balance + cmd.getAmount()).amount(cmd.getAmount()));
+		AggregateLifecycle.apply(ECreditAdded.builder().kioskId(cmd.getKioskId()).balance(balance + cmd.getAmount()).amount(cmd.getAmount()).build());
 	}
 	
 	@CommandHandler
@@ -51,7 +61,7 @@ public class Account {
 			LOG.info("Amount to remove is more than current balance - reducing balance to zero");
 			amountToRemove = balance;
 		}
-		AggregateLifecycle.apply(ECreditRemoved.builder().kioskId(cmd.getKioskId()).balance(balance - amountToRemove).amount(amountToRemove));
+		AggregateLifecycle.apply(ECreditRemoved.builder().kioskId(cmd.getKioskId()).balance(balance - amountToRemove).amount(amountToRemove).build());
 	}
 
 	@EventSourcingHandler
@@ -60,8 +70,4 @@ public class Account {
 		LOG.trace("on(event={})", event);
 		balance = event.getBalance();
 	}
-
-    public synchronized int getBalance() {
-    	return balance;
-    }
 }
