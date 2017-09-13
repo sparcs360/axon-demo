@@ -8,6 +8,7 @@ services:
     container_name: counter1
     depends_on:
       - rabbitmq
+      - discovery
     ports:
       - "30010:8081"    # Web API
     environment:
@@ -20,6 +21,7 @@ services:
     container_name: kiosk1_1
     depends_on:
       - rabbitmq
+      - discovery
     ports:
       - "30011:8080"    # Web API
     environment:
@@ -32,6 +34,7 @@ services:
     container_name: kiosk1_2
     depends_on:
       - rabbitmq
+      - discovery
     ports:
       - "30012:8080"    # Web API
     environment:
@@ -44,6 +47,7 @@ services:
     container_name: counter2
     depends_on:
       - rabbitmq
+      - discovery
     ports:
       - "30020:8081"    # Web API
     environment:
@@ -55,6 +59,7 @@ services:
     container_name: kiosk2_1
     depends_on:
       - rabbitmq
+      - discovery
     ports:
       - "30021:8080"    # Web API
     environment:
@@ -75,3 +80,4 @@ services:
     container_name: discovery
     ports:
       - "8761:8761"    # Web API
+
