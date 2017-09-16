@@ -4,6 +4,9 @@ angular.module('appKiosk', [
     'ui.bootstrap',
     'ngStomp'
 ])
-.run(function (SocketService) { // instance-injector
+.run(function ($stomp) { // instance-injector
 
+    $stomp.setDebug(function (message) {
+        console.log('$stomp: ' + message);
+    });
 });
