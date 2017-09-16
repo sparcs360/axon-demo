@@ -26,7 +26,8 @@ public class AccountController {
     @SendTo(BalanceTracker.TOPIC_NAME)
     public int getBalance(Message<Object> message) {
 
-    	LOG.debug("getBalance({})", message);
-    	return balanceTracker.getBalance();
+    	int balance = balanceTracker.getBalance();
+    	LOG.debug("getBalance() <- {}", balance);
+		return balance;
     }
 }
