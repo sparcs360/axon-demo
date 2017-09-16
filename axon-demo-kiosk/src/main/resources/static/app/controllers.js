@@ -3,7 +3,9 @@
 angular.module('appKiosk')
 .controller('KioskCtrl', function ($scope, SocketService, KioskService) {
 	
-    SocketService.connect().then(function () {
+    SocketService.connect('KioskCtrl').then(function () {
+    	
+    	console.log('KioskCtrl: connect callback');
 
     	KioskService.getKioskInfo()
     		.then((data) => $scope.info = data);
@@ -24,7 +26,10 @@ angular.module('appKiosk')
 })
 .controller('BuildSlipCtrl', function ($scope, SocketService, BuildSlipService) {
 	
-    SocketService.connect().then(function () {
+    SocketService.connect('BuildSlipCtrl').then(function () {
+
+    	console.log('BuildSlipCtrl: connect callback');
+
     	getEvents();
     	BuildSlipService.subscribeToSlipUpdates()
     		.then(function () {}, function () {}, updateSlip);

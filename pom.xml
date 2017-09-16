@@ -44,7 +44,7 @@
 		<webjars-locator.version>0.30</webjars-locator.version>
 		<sockjs-client.version>1.1.1</sockjs-client.version>
 		<stomp-websocket.version>2.3.3</stomp-websocket.version>
-		<ng-stomp.verion>0.3.0</ng-stomp.verion>
+		<ng-stomp.verion>0.4.0</ng-stomp.verion>
 	</properties>
 
 	<dependencyManagement>

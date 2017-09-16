@@ -3,27 +3,62 @@
 angular.module('appKiosk')
 .service('SocketService', function ($stomp, $q) {
 
-    var isConnected = false;
+	var state = 'idle';
+	var subscriberMap;
+	var failureReason;
 
     return {
-        connect: function () {
+        connect: function (requester) {
             return $q(function (resolve, reject) {
-                if (!isConnected) {
-                	console.log('Attempting to connect to /kiosk-websocket');
+            	
+            	console.log('SocketService[' + state + ']: Connect request from [' + requester + ']');
+
+            	if (state === 'connected') {
+
+                	console.log('SocketService[' + state + ']: Resolving [' + requester + ']');
+            		resolve();
+
+            	} else if (state === 'idle') {
+
+                	state = 'connecting';
+                	console.log('SocketService[' + state + ']: Attempting to connect to /kiosk-websocket');
+            		subscriberMap = new Map([[requester, {'resolve': resolve, 'reject': reject}]]);
+
                     $stomp.connect('/kiosk-websocket')
                         .then(function (frame) {
-                        	console.log('Connected');
-                            isConnected = true;
-                            resolve();
+                        	state = 'connected';
+                        	console.log('SocketService[' + state + ']: Connected, frame=' + frame);
+                    		for (let [pendingRequester, pendingPromise] of subscriberMap) {
+                            	console.log('SocketService[' + state + ']: Resolving [' + pendingRequester + ']');
+                            	pendingPromise.resolve();
+                    		}
+                    		subscriberMap = undefined;
                         })
                         .catch(function (reason) {
-                        	console.log('Failed because [' + reason + ']');
-                            reject(reason);
+                        	state = "failed";
+                        	console.log('SocketService[' + state + ']: Connection failed because [' + reason + ']');
+                        	failureReason = reason;
+                    		for (let [pendingRequester, pendingPromise] of subscriberMap) {
+                            	console.log('SocketService[' + state + ']: Rejecting [' + pendingRequester + ']');
+                            	pendingPromise.reject(failureReason);
+                    		}
+                    		subscriberMap = undefined;
                         });
-                }
-                else {
-                    resolve();
-                }
+
+            	} else if (state === 'connecting') {
+
+            		console.log('SocketService[' + state + ']: Adding [' + requester + '] to subscriber list');
+            		subscriberMap.set(requester, {'resolve': resolve, 'reject': reject});
+
+            	} else if (state === 'failed') {
+
+                	console.log('SocketService[' + state + ']: Rejecting [' + requester + ']');
+            		reject(failureReason);
+
+            	} else {
+
+            		console.error('SocketService[' + state + ']: UNKNOWN state');
+            	}
             });
         }
     };
