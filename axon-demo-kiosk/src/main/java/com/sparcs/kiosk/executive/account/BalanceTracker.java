@@ -33,17 +33,12 @@ public class BalanceTracker {
 	}
 	
 	@EventHandler
-	void on(EBalanceChanged event) {
+	synchronized void on(EBalanceChanged event) {
 		
 		LOG.trace("on(event={})", event);
 
-		publish(event.getBalance());
-	}
-
-	private synchronized void publish(int balance) {
-
+		balance = event.getBalance();
 		LOG.debug("Publishing balance={}", balance);
 		messagingTemplate.convertAndSend(TOPIC_NAME, balance);
 	}
-
 }

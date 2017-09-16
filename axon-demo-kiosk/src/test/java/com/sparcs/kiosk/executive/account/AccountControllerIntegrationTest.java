@@ -48,6 +48,8 @@ public class AccountControllerIntegrationTest {
 	static final String WEBSOCKET_URI = "http://localhost:8080/kiosk-websocket";
     static final String SEND_COMMAND_DESTINATION = "/kiosk/commands/send";
     static final String CMD_DEPOSIT_CASH = "executive.account.CDepositCash";
+
+    static final String ACCOUNT_GET_BALANCE = "/kiosk/commands/account/balance/get";
     static final String ACCOUNT_SUB_SUMMARY = "/topic/account/balance";
 
 	private static final int AMOUNT = 337;
@@ -84,7 +86,7 @@ public class AccountControllerIntegrationTest {
         givenClientConnectedTo(WEBSOCKET_URI);
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
 
-		whenClientSendsCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
+		whenClientSendsAxonCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
 		thenShouldReceiveReply(337);
     }
@@ -96,9 +98,21 @@ public class AccountControllerIntegrationTest {
 		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
 		givenClientSentCommandAndReceivedResponse(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
-		whenClientSendsCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
+		whenClientSendsAxonCommand(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
 
 		thenShouldReceiveReply(AMOUNT + AMOUNT);
+    }
+
+    @Test
+    public void when_GetBalance_then_ShouldReturnCurrentBalance() throws Exception {
+
+        givenClientConnectedTo(WEBSOCKET_URI);
+		givenClientSubscribesTo(ACCOUNT_SUB_SUMMARY, Integer.class);
+		givenClientSentCommandAndReceivedResponse(CMD_DEPOSIT_CASH, "{\"amount\": " + AMOUNT + "}");
+
+		whenClientSendsControllerCommand(ACCOUNT_GET_BALANCE, "");
+
+		thenShouldReceiveReply(337);
     }
 
 	private void thenShouldReceiveReply(Object expectedResponse) throws Exception {
@@ -129,9 +143,14 @@ public class AccountControllerIntegrationTest {
 		return receiptable;
 	}
 
-	private Receiptable whenClientSendsCommand(String name, String payload) {
+	private Receiptable whenClientSendsAxonCommand(String name, String payload) {
 
 		return session.send(String.format("%s/%s", SEND_COMMAND_DESTINATION, name), payload);
+	}
+
+	private Receiptable whenClientSendsControllerCommand(String name, String payload) {
+
+		return session.send(name, payload);
 	}
 
     class StompConversation implements StompFrameHandler {
