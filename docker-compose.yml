@@ -2,6 +2,43 @@ version: '2'
 
 services:
 
+  rabbitmq:
+    image: sparcs/rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management Web UI & API
+
+  discovery:
+    build: axon-demo-discovery/
+    image: sparcs/discovery
+    container_name: discovery
+    ports:
+      - "8761:8761"    # Web API
+
+  product1:
+    build: axon-demo-product/
+    image: sparcs/product
+    container_name: product1
+    depends_on:
+      - discovery
+    ports:
+      - "20011:8082"    # Web API
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PRODUCT_PROFILES_ACTIVE}
+      INSTANCE_ID: "01"
+
+  product2:
+    image: sparcs/product
+    container_name: product2
+    depends_on:
+      - discovery
+    ports:
+      - "20012:8082"    # Web API
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PRODUCT_PROFILES_ACTIVE}
+      INSTANCE_ID: "02"
+
   counter1:
     build: axon-demo-counter/
     image: sparcs/counter
@@ -66,18 +103,3 @@ services:
       SPRING_PROFILES_ACTIVE: ${KIOSK_PROFILES_ACTIVE}
       SHOP_ID: "000002"
       KIOSK_INDEX: "01"
-
-  rabbitmq:
-    image: sparcs/rabbitmq
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"     # AMQP
-      - "15672:15672"   # Management Web UI & API
-
-  discovery:
-    build: axon-demo-discovery/
-    image: sparcs/discovery
-    container_name: discovery
-    ports:
-      - "8761:8761"    # Web API
-
