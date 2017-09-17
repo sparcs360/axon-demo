@@ -26,6 +26,7 @@
 		<module>axon-demo-kiosk</module>
 		<module>axon-demo-counter</module>
 		<module>axon-demo-counter-common</module>
+		<module>axon-demo-product</module>
 	</modules>
 
 	<properties>
