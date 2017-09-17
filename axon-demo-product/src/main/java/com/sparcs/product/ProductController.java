@@ -20,7 +20,7 @@ public class ProductController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 
-	@GetMapping("/competitions/{competitionId}")
+	@GetMapping("/competition/{competitionId}")
 	public ResponseEntity<?> getCompetitionById(@PathVariable String competitionId) {
 
 		LOG.debug("getCompetitionById(competitionId={})", competitionId);
@@ -34,26 +34,27 @@ public class ProductController {
 	}
 
 	private static CompetitionDto TWWC2017 = CompetitionDto.builder()
+		.competitionId("TWWC2017")
 		.name("Tiddly-Winks World Championshop 2017")
 		.events(Arrays.asList(
 			EventDto.builder()
-				.id("E1")
+				.eventId("E1")
 				.name("Barnsley vs Sheffield")
 				.selections(Arrays.asList(
 					SelectionDto.builder()
-						.id("S1.1")
+						.selectionId("S1.1")
 						.name("Barnsley")
 						.numerator(7)
 						.denominator(6)
 						.build(),
 					SelectionDto.builder()
-						.id("S1.2")
+						.selectionId("S1.2")
 						.name("Draw")
 						.numerator(2)
 						.denominator(1)
 						.build(),
 					SelectionDto.builder()
-						.id("S1.3")
+						.selectionId("S1.3")
 						.name("Sheffield")
 						.numerator(3)
 						.denominator(1)
@@ -61,23 +62,23 @@ public class ProductController {
 				))
 				.build(),
 			EventDto.builder()
-				.id("E2")
+				.eventId("E2")
 				.name("Leeds vs Manchester")
 				.selections(Arrays.asList(
 					SelectionDto.builder()
-						.id("S2.1")
+						.selectionId("S2.1")
 						.name("Leeds")
 						.numerator(3)
 						.denominator(2)
 						.build(),
 					SelectionDto.builder()
-						.id("S2.2")
+						.selectionId("S2.2")
 						.name("Draw")
 						.numerator(11)
 						.denominator(10)
 						.build(),
 					SelectionDto.builder()
-						.id("S2.3")
+						.selectionId("S2.3")
 						.name("Manchester")
 						.numerator(2)
 						.denominator(1)

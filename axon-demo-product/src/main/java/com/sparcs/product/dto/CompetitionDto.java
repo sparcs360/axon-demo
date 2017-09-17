@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 public class CompetitionDto {
 
+	private final String competitionId;
 	private final String name;
 	private final List<EventDto> events;
 }

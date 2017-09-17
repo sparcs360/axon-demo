@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class SelectionDto {
 
-	private final String id;
+	private final String selectionId;
 	private final String name;
 	private final int numerator;
 	private final int denominator;

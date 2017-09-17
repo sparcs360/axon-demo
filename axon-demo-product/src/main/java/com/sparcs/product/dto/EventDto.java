@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class EventDto {
 
-	private final String id;
+	private final String eventId;
 	private final String name;
 	private final List<SelectionDto> selections;
 	
